@@ -1,0 +1,1250 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>peng-slide-deck · Demo</title>
+<!-- ============================================================
+     字体加载策略
+     - 优先从 Google Fonts 加载（海外用户）
+     - 国内 / 离线时回退到系统字体（CSS font-family 后备链）
+     - 最终回退：衬线→系统宋体/Georgia，非衬线→系统黑体/sans-serif
+     ============================================================ -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- Google Fonts 由风格系统动态替换 -->
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,700&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,400&family=IBM+Plex+Mono:wght@300;400;500;600&family=Noto+Serif+SC:wght@300;400;500;600;700;900&family=Noto+Sans+SC:wght@300;400;500;700;900&family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@300;400;500;600;700&family=Caveat:wght@400;500;600;700&family=Klee+One:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    /* ============================================================
+       ============ 主题色（默认:🖋 墨水经典） ============
+       切换主题:从 references/themes/ 找对应预设，整体替换这几行
+       --ink / --ink-rgb / --paper / --paper-rgb / --paper-tint / --ink-tint
+       ============================================================ */
+    --ink:#0a0a0b;
+    --ink-rgb:10,10,11;
+    --paper:#f1efea;
+    --paper-rgb:241,239,234;
+    --paper-tint:#e8e5de;
+    --ink-tint:#18181a;
+
+    /* ============================================================
+       ============ 风格变量（默认:blueprint） ============
+       由 4 维风格系统驱动，切换预设时整体替换此块
+       ============================================================ */
+
+    /* --- Texture: grid --- */
+    --bg-texture:none;
+    --bg-overlay:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='40' height='40'><rect width='40' height='40' fill='none'/><rect width='1' height='40' fill='rgba(0,0,0,0.04)' x='20'/><rect width='40' height='1' fill='rgba(0,0,0,0.04)' y='20'/></svg>");
+    --texture-opacity:0.5;
+    --border-radius:2px;
+
+    /* --- Mood: cool --- */
+    --palette-bg:#FAF8F5;
+    --palette-bg-rgb:250,248,245;
+    --palette-text:#334155;
+    --palette-text-rgb:51,65,85;
+    --palette-text-secondary:#64748B;
+    --palette-accent-1:#2563EB;
+    --palette-accent-1-rgb:37,99,235;
+    --palette-accent-2:#1E3A5F;
+    --palette-accent-2-rgb:30,58,95;
+    --palette-accent-3:#BFDBFE;
+    --palette-accent-3-rgb:191,219,254;
+    --palette-warning:#F59E0B;
+
+    /* --- Typography: technical --- */
+    --font-headline-en:'Inter', -apple-system, 'Helvetica Neue', sans-serif;
+    --font-headline-zh:'Noto Serif SC', 'PingFang SC', 'Songti SC', serif;
+    --font-body-en:'Inter', -apple-system, 'Helvetica Neue', sans-serif;
+    --font-body-zh:'Noto Sans SC', 'PingFang SC', sans-serif;
+    --font-mono:'JetBrains Mono', 'IBM Plex Mono', 'SF Mono', monospace;
+    --font-display:'Playfair Display', 'Georgia', 'Times New Roman', serif;
+    --font-handwritten:'Caveat', 'Klee One', 'Kaiti SC', cursive;
+    --headline-weight:700;
+    --headline-style:normal;
+    --headline-letter-spacing:-0.02em;
+    --body-letter-spacing:0.01em;
+
+    /* --- Density: balanced --- */
+    --slide-padding:6vh 6vw 10vh 6vw;
+    --content-gap:2.4vh;
+    --headline-hero-size:10vw;
+    --headline-xl-size:6.2vw;
+    --headline-md-size:2.3vw;
+    --subheadline-size:3.1vw;
+    --body-size:max(15px, 1.22vw);
+    --lead-size:1.75vw;
+    --margin-content:10%;
+    --grid-gap-h:3vw;
+    --grid-gap-v:4vh;
+    --stat-nb-size:5.8vw;
+    --stat-label-size:max(10px, 0.78vw);
+  }
+
+  /* ============ 全局重置 ============ */
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  html,body{width:100%;height:100%;overflow:hidden;background:var(--ink);color:var(--paper);font-family:var(--font-body-zh);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+
+  /* ============ WebGL 双背景 ============ */
+  canvas.bg{position:fixed;inset:0;width:100vw;height:100vh;z-index:0;display:block;transition:opacity 1.2s ease}
+  canvas#bg-light{opacity:0}
+  canvas#bg-dark{opacity:1}
+  body.light-bg canvas#bg-light{opacity:1}
+  body.light-bg canvas#bg-dark{opacity:0}
+
+  /* ============ Deck 容器 + 翻页 ============ */
+  #deck{position:fixed;inset:0;width:10000vw;height:100vh;display:flex;flex-wrap:nowrap;transition:transform .9s cubic-bezier(.77,0,.175,1);z-index:10;will-change:transform}
+
+  .slide{
+    width:100vw;height:100vh;flex:0 0 100vw;position:relative;
+    padding:var(--slide-padding);
+    display:flex;flex-direction:column;overflow:hidden;
+  }
+  .slide.light{color:var(--ink);background:var(--paper)}
+  .slide.dark{color:var(--paper);background:var(--ink)}
+
+  /* ============ 背景遮罩 ============ */
+  .slide::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;transition:background .7s ease}
+  .slide.light::before{
+    background:rgba(var(--paper-rgb),.78);
+    backdrop-filter:blur(3px);
+    -webkit-backdrop-filter:blur(3px);
+  }
+  .slide.dark::before{
+    background:rgba(var(--ink-rgb),.78);
+    backdrop-filter:blur(3px);
+    -webkit-backdrop-filter:blur(3px);
+  }
+  /* Hero 页：遮罩大幅降低，WebGL 背景明显透出 */
+  .slide.hero.light::before{background:rgba(var(--paper-rgb),.16);backdrop-filter:none;-webkit-backdrop-filter:none}
+  .slide.hero.dark::before{background:rgba(var(--ink-rgb),.12);backdrop-filter:none;-webkit-backdrop-filter:none}
+  .slide.hero::after{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none}
+  .slide.hero.light::after{background:linear-gradient(180deg,rgba(var(--paper-rgb),.28) 0%,rgba(var(--paper-rgb),0) 14%,rgba(var(--paper-rgb),0) 86%,rgba(var(--paper-rgb),.28) 100%)}
+  .slide.hero.dark::after{background:linear-gradient(180deg,rgba(var(--ink-rgb),.32) 0%,rgba(var(--ink-rgb),0) 14%,rgba(var(--ink-rgb),0) 86%,rgba(var(--ink-rgb),.32) 100%)}
+
+  /* ============ 纹理叠加层 ============ */
+  .slide::after.texture{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;opacity:var(--texture-opacity, 0.5)}
+  .slide.light::after.texture{background-image:var(--bg-overlay)}
+  .slide.dark::after.texture{background-image:var(--bg-overlay);filter:invert(1)}
+
+  /* ============ Chrome & Foot ============ */
+  .chrome{
+    display:flex;justify-content:space-between;align-items:flex-start;
+    font-family:var(--font-mono);font-size:max(11px,0.78vw);
+    letter-spacing:.2em;text-transform:uppercase;opacity:.62;position:relative;z-index:1;
+  }
+  .chrome .left,.chrome .right{display:flex;gap:2.4em;align-items:center}
+  .chrome .sep{width:40px;height:1px;background:currentColor;opacity:.4}
+  .foot{
+    margin-top:auto;display:flex;justify-content:space-between;align-items:flex-end;
+    font-family:var(--font-mono);font-size:max(11px,0.78vw);
+    letter-spacing:.18em;text-transform:uppercase;opacity:.5;position:relative;z-index:1;
+  }
+  .foot .title{font-family:var(--font-headline-zh);font-weight:400;letter-spacing:.05em;text-transform:none;opacity:.75;font-size:13px}
+
+  /* ============ 字体层级 ============ */
+  .kicker{
+    font-family:var(--font-mono);font-size:max(11px,0.78vw);
+    letter-spacing:.3em;text-transform:uppercase;opacity:.6;margin-bottom:2.6vh;
+    position:relative;z-index:1;
+  }
+  .display{
+    font-family:var(--font-display);font-weight:800;font-size:11vw;
+    line-height:.92;letter-spacing:-.025em;position:relative;z-index:1;
+  }
+  .display-zh{
+    font-family:var(--font-headline-zh);font-weight:900;font-size:7.8vw;
+    line-height:1.04;letter-spacing:-.005em;position:relative;z-index:1;
+  }
+
+  /* --- 标题层级 API --- */
+  .h-hero{
+    font-family:var(--font-headline-zh);
+    font-weight:900;
+    font-size:var(--headline-hero-size);
+    line-height:.96;
+    letter-spacing:var(--headline-letter-spacing);
+    position:relative;z-index:1;
+  }
+  .h-hero-en{
+    font-family:var(--font-display);
+    font-weight:800;
+    font-size:var(--headline-hero-size);
+    line-height:.92;
+    letter-spacing:-.025em;
+    position:relative;z-index:1;
+  }
+  .h-xl{
+    font-family:var(--font-headline-zh);
+    font-weight:700;
+    font-size:var(--headline-xl-size);
+    line-height:1.08;
+    letter-spacing:-.01em;
+    position:relative;z-index:1;
+  }
+  .h-xl-en{
+    font-family:var(--font-display);
+    font-weight:700;
+    font-size:var(--headline-xl-size);
+    line-height:1.04;
+    letter-spacing:-.02em;
+    position:relative;z-index:1;
+  }
+  .h-sub{
+    font-family:var(--font-headline-zh);
+    font-weight:500;
+    font-size:var(--subheadline-size);
+    line-height:1.25;
+    letter-spacing:0;
+    opacity:.7;
+    position:relative;z-index:1;
+  }
+  .h-md{
+    font-family:var(--font-headline-zh);
+    font-weight:600;
+    font-size:var(--headline-md-size);
+    line-height:1.3;
+    position:relative;z-index:1;
+  }
+
+  /* --- 正文层级 --- */
+  .lead{
+    font-family:var(--font-headline-zh);
+    font-weight:400;
+    font-size:var(--lead-size);
+    line-height:1.5;
+    opacity:.86;
+    position:relative;z-index:1;
+  }
+  .body-zh{
+    font-family:var(--font-body-zh);
+    font-weight:400;
+    font-size:var(--body-size);
+    line-height:1.75;
+    opacity:.82;
+    letter-spacing:var(--body-letter-spacing);
+    position:relative;z-index:1;
+  }
+  .body-serif{
+    font-family:var(--font-headline-zh);
+    font-weight:400;
+    font-size:max(15px, 1.3vw);
+    line-height:1.65;
+    opacity:.88;
+    position:relative;z-index:1;
+  }
+  .meta{
+    font-family:var(--font-mono);
+    font-size:max(11px, .88vw);
+    letter-spacing:.16em;
+    text-transform:uppercase;
+    opacity:.6;
+    position:relative;z-index:1;
+  }
+  .meta-row{
+    display:flex;gap:1.2em;align-items:baseline;flex-wrap:wrap;
+    font-family:var(--font-mono);
+    font-size:max(12px, .92vw);
+    letter-spacing:.16em;text-transform:uppercase;opacity:.6;
+    position:relative;z-index:1;
+  }
+
+  /* --- 数字 --- */
+  .big-num{
+    font-family:var(--font-display);
+    font-weight:800;font-size:10vw;line-height:.85;
+    letter-spacing:-.03em;font-feature-settings:"tnum";
+    position:relative;z-index:1;
+  }
+  .mid-num{
+    font-family:var(--font-display);
+    font-weight:700;font-size:5.5vw;line-height:.88;
+    letter-spacing:-.02em;font-feature-settings:"tnum";
+    position:relative;z-index:1;
+  }
+  .ghost{
+    font-family:var(--font-display);
+    font-weight:900;font-size:34vw;line-height:.8;
+    opacity:.06;letter-spacing:-.04em;
+    position:absolute;font-feature-settings:"tnum";
+  }
+
+  /* --- 辅助 --- */
+  em{font-style:italic;font-family:var(--font-display)}
+  .en{font-family:var(--font-display);font-style:italic;font-weight:500}
+  .hi{position:relative;display:inline;z-index:1}
+  .slide.dark .hi::after{content:"";position:absolute;left:-.1em;right:-.1em;bottom:-.05em;height:.28em;background:rgba(var(--paper-rgb),.15);z-index:-1}
+  .slide.light .hi::after{content:"";position:absolute;left:-.1em;right:-.1em;bottom:-.05em;height:.28em;background:rgba(var(--ink-rgb),.08);z-index:-1}
+
+  /* ============ 布局工具 ============ */
+  .frame{flex:1;display:flex;flex-direction:column;min-height:0;overflow:hidden;position:relative;z-index:1}
+  .frame.grid-2-7-5,
+  .frame.grid-2-6-6,
+  .frame.grid-2-8-4,
+  .frame.grid-3-3,
+  .frame.grid-6{display:grid}
+
+  .col{display:flex;flex-direction:column;gap:var(--content-gap)}
+  .row{display:flex;align-items:center;gap:var(--grid-gap-h)}
+  .fill{flex:1}
+  .center{align-items:center;justify-content:center;text-align:center}
+  .bottom-left{position:absolute;left:6vw;bottom:9vh;max-width:50vw}
+  .bottom-right{position:absolute;right:6vw;bottom:9vh;max-width:50vw;text-align:right}
+  .top-right{position:absolute;right:6vw;top:6vh;text-align:right}
+  .split{display:grid;grid-template-columns:1fr 1fr;gap:4vw;flex:1;align-items:center}
+  .split-55{display:grid;grid-template-columns:55fr 45fr;gap:5vw;flex:1;align-items:stretch}
+
+  /* ============ 网格系统 ============ */
+  .grid-2-7-5{display:grid;grid-template-columns:7fr 5fr;gap:var(--grid-gap-v) var(--grid-gap-h);align-items:start}
+  .grid-2-6-6{display:grid;grid-template-columns:1fr 1fr;gap:var(--grid-gap-v) var(--grid-gap-h);align-items:start}
+  .grid-2-8-4{display:grid;grid-template-columns:8fr 4fr;gap:var(--grid-gap-v) var(--grid-gap-h);align-items:start}
+  .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--grid-gap-h);flex:1;align-content:center}
+  .grid-3-3{
+    display:grid;grid-template-columns:repeat(3,1fr);
+    grid-auto-rows:minmax(0,1fr);
+    gap:2.4vh 2vw;
+  }
+  .grid-4{display:grid;grid-template-columns:repeat(2,1fr);grid-template-rows:repeat(2,1fr);gap:4vh 6vw;flex:1;align-content:center}
+  .grid-6{display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(2,1fr);gap:4vw 6vw;flex:1;align-content:center;padding:2vh 0}
+  .grid-9{display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);gap:3vh 4vw;flex:1;align-content:center}
+
+  /* ============ Stat 数据卡片 ============ */
+  .stat{display:flex;flex-direction:column;gap:1vh;align-items:flex-start;position:relative;z-index:1}
+  .stat .n{
+    font-family:var(--font-display);font-weight:800;font-size:8vw;
+    line-height:.88;letter-spacing:-.03em;font-feature-settings:"tnum";
+  }
+  .stat .l{
+    font-family:var(--font-body-zh);font-size:max(13px,1.05vw);
+    opacity:.7;margin-top:1vh;font-weight:400;line-height:1.5;
+  }
+  .stat .m{
+    font-family:var(--font-mono);font-size:10px;letter-spacing:.22em;
+    text-transform:uppercase;opacity:.5;margin-bottom:.2vh;
+  }
+  .stat-card{
+    display:flex;flex-direction:column;gap:.8vh;align-items:flex-start;
+    padding-top:1.6vh;border-top:1px solid currentColor;
+    border-color:rgba(127,127,127,.3);position:relative;z-index:1;
+  }
+  .stat-card .stat-label{
+    font-family:var(--font-mono);font-size:var(--stat-label-size);
+    letter-spacing:.24em;text-transform:uppercase;opacity:.55;
+  }
+  .stat-card .stat-nb{
+    font-family:var(--font-display);font-weight:800;
+    font-size:var(--stat-nb-size);line-height:.9;
+    letter-spacing:-.03em;font-feature-settings:"tnum";margin-top:.4vh;
+  }
+  .stat-card .stat-nb .stat-unit{
+    font-family:var(--font-headline-zh);font-weight:500;
+    font-size:.38em;letter-spacing:0;opacity:.72;margin-left:.14em;
+  }
+  .stat-card .stat-note{
+    font-family:var(--font-body-zh);font-weight:400;
+    font-size:max(13px,1.05vw);line-height:1.5;opacity:.72;margin-top:.6vh;
+  }
+  .grid-4 .stat-card .stat-nb{font-size:5vw}
+  .grid-3 .stat-card .stat-nb{font-size:6.8vw}
+
+  /* ============ Callout 引用框 ============ */
+  .callout{
+    padding:3vh 2.4vw;border-left:3px solid currentColor;
+    position:relative;z-index:1;
+    font-family:var(--font-headline-zh);font-size:max(15px,1.2vw);
+    line-height:1.55;opacity:.92;
+  }
+  .slide.light .callout{background:rgba(var(--ink-rgb),.05)}
+  .slide.dark .callout{background:rgba(var(--paper-rgb),.06)}
+  .callout .cite,.callout-src{display:block;margin-top:1.6vh;
+    font-family:var(--font-mono);font-size:11px;
+    letter-spacing:.2em;text-transform:uppercase;opacity:.6;
+  }
+  .callout .q-big{font-family:var(--font-headline-zh);font-weight:600;
+    font-size:max(17px,1.6vw);line-height:1.42;}
+
+  /* ============ Pipeline 流水线 ============ */
+  .pipeline-section{
+    margin-top:4.4vh;padding-top:2.8vh;
+    border-top:1px dashed rgba(127,127,127,.32);
+    position:relative;z-index:1;
+  }
+  .pipeline-section:first-of-type{border-top:0;padding-top:0;margin-top:3vh}
+  .pipeline-label{
+    font-family:var(--font-mono);font-size:max(11px,.85vw);
+    letter-spacing:.24em;text-transform:uppercase;opacity:.62;
+    margin-bottom:2.2vh;
+  }
+  .pipeline{display:grid;grid-template-columns:repeat(5,1fr);gap:1.2vw}
+  .pipeline[data-cols="3"]{grid-template-columns:repeat(3,1fr)}
+  .pipeline[data-cols="4"]{grid-template-columns:repeat(4,1fr)}
+  .pipeline[data-cols="6"]{grid-template-columns:repeat(6,1fr)}
+  .step{
+    display:flex;flex-direction:column;gap:.8vh;
+    padding-top:1.4vh;border-top:1px solid currentColor;
+    border-color:rgba(127,127,127,.35);
+  }
+  .step-nb{
+    font-family:var(--font-display);font-style:italic;
+    font-weight:500;font-size:1.15vw;opacity:.45;
+  }
+  .step-title{
+    font-family:var(--font-body-zh);font-weight:700;
+    font-size:1.55vw;letter-spacing:.01em;line-height:1.2;
+  }
+  .step-desc{
+    font-family:var(--font-body-zh);font-weight:400;
+    font-size:max(12px,.95vw);line-height:1.45;opacity:.72;
+  }
+
+  /* ============ Rowline 表格行 ============ */
+  .rowline{
+    display:grid;grid-template-columns:1fr 2fr 1fr;gap:2vw;
+    padding:2.2vh 0;border-top:1px solid currentColor;
+    align-items:center;border-color:rgba(127,127,127,.25);
+    position:relative;z-index:1;
+  }
+  .rowline:last-child{border-bottom:1px solid currentColor;border-color:rgba(127,127,127,.25)}
+  .rowline .k{font-family:var(--font-headline-zh);font-weight:700;font-size:1.7vw}
+  .rowline .v{font-family:var(--font-body-zh);font-weight:400;font-size:max(14px,1.2vw);opacity:.85;line-height:1.55}
+  .rowline .m{font-family:var(--font-mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;opacity:.6;justify-self:end}
+
+  /* ============ Pillar 支柱卡 ============ */
+  .pillar{display:flex;flex-direction:column;gap:1.8vh;position:relative;z-index:1}
+  .pillar .ic{font-family:var(--font-display);font-style:italic;font-size:2.6vw;opacity:.45;font-weight:400}
+  .pillar .ic svg{width:2.8vw;height:2.8vw;stroke-width:1.2;opacity:.7}
+  .pillar .t{font-family:var(--font-headline-zh);font-weight:700;font-size:2.4vw;line-height:1.1}
+  .pillar .d{font-family:var(--font-body-zh);font-weight:400;font-size:max(14px,1.1vw);opacity:.76;line-height:1.6}
+
+  /* ============ Platform 平台卡 ============ */
+  .plat{
+    display:flex;flex-direction:column;justify-content:flex-end;
+    padding:2vh 0;border-top:1px solid currentColor;
+    border-color:rgba(127,127,127,.35);position:relative;z-index:1;
+  }
+  .plat .name{font-family:var(--font-headline-zh);font-weight:700;font-size:1.8vw;margin-bottom:.6vh}
+  .plat .nb{font-family:var(--font-display);font-weight:700;font-size:3.2vw;letter-spacing:-.02em;line-height:1;font-feature-settings:"tnum"}
+  .plat .sub{font-family:var(--font-mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;opacity:.55;margin-top:.6vh}
+  .plat .fill{font-family:var(--font-body-zh);font-weight:300;font-size:2.4vw;opacity:.28;letter-spacing:-.01em;line-height:1}
+
+  /* ============ Tag & Rule ============ */
+  .tag{
+    display:inline-block;font-family:var(--font-mono);font-size:11px;
+    letter-spacing:.24em;text-transform:uppercase;
+    padding:6px 14px;border:1px solid currentColor;opacity:.85;
+    position:relative;z-index:1;
+  }
+  .rule{width:100%;height:1px;background:currentColor;opacity:.25;margin:3vh 0}
+  .rule.v{width:1px;height:100%;margin:0}
+
+  /* ============ 图片系统 ============ */
+  .img-slot{
+    border:1.5px dashed rgba(127,127,127,.4);
+    display:flex;align-items:center;justify-content:center;
+    flex-direction:column;gap:1vh;padding:2vh 2vw;
+    font-family:var(--font-mono);font-size:10px;
+    letter-spacing:.28em;text-transform:uppercase;opacity:.55;
+    position:relative;aspect-ratio:16/9;width:100%;
+    max-height:56vh;margin-inline:auto;
+  }
+  .img-slot::before{content:"";position:absolute;inset:8px;border:1px solid currentColor;opacity:.2}
+  .img-slot .plus{font-size:2vw;font-weight:300;opacity:.5;letter-spacing:0}
+  .img-slot .label{position:relative;z-index:2;text-align:center}
+  .img-slot.r-4x3{aspect-ratio:4/3}
+  .img-slot.r-3x2{aspect-ratio:3/2}
+  .img-slot.r-1x1{aspect-ratio:1/1}
+
+  .frame-img{
+    overflow:hidden;position:relative;background:rgba(0,0,0,.04);
+    width:100%;border-radius:var(--border-radius);
+  }
+  .slide.dark .frame-img{background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.12)}
+  .frame-img > img{
+    width:100%;height:100%;object-fit:cover;
+    object-position:top center;display:block;
+  }
+  .frame-img.fit-contain > img{object-fit:contain;object-position:center center}
+  .frame-img.r-16x9{aspect-ratio:16/9;max-height:64vh}
+  .frame-img.r-16x10{aspect-ratio:16/10;max-height:56vh}
+  .frame-img.r-4x3{aspect-ratio:4/3;max-height:56vh}
+  .frame-img.r-3x2{aspect-ratio:3/2;max-height:46vh}
+  .frame-img.r-3x4{aspect-ratio:3/4;max-height:60vh}
+  .frame-img.r-1x1{aspect-ratio:1/1;max-height:50vh}
+  .frame-img.h-16{height:16vh}
+  .frame-img.h-18{height:18vh}
+  .frame-img.h-22{height:22vh}
+  .frame-img.h-26{height:26vh}
+  .frame-img.h-28{height:28vh}
+
+  .frame-cap,.img-cap{
+    display:flex;justify-content:space-between;align-items:baseline;
+    gap:1vw;margin-top:.8vh;
+    font-family:var(--font-mono);font-size:max(10px,.8vw);
+    letter-spacing:.22em;text-transform:uppercase;opacity:.72;
+  }
+  .frame-cap .pf{
+    font-family:var(--font-headline-zh);font-weight:600;
+    font-size:max(13px,1vw);letter-spacing:.04em;
+    text-transform:none;opacity:.94;
+  }
+  .frame-cap .nb{
+    font-family:var(--font-display);font-style:italic;
+    font-size:max(15px,1.2vw);letter-spacing:.02em;
+    text-transform:none;opacity:.88;
+  }
+  .frame-cap .idx{font-family:var(--font-mono);opacity:.5}
+  figure.tile{display:flex;flex-direction:column;margin:0;min-width:0}
+  figure.tile > .frame-img{flex:0 0 auto}
+  figure.frame-img{margin:0;display:flex;flex-direction:column;min-width:0}
+
+  /* ============ 导航 ============ */
+  #nav{
+    position:fixed;left:50%;bottom:2.6vh;transform:translateX(-50%);
+    z-index:30;display:flex;gap:10px;padding:8px 14px;
+    border-radius:999px;background:rgba(0,0,0,.18);
+    backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  }
+  #nav .dot{
+    width:8px;height:8px;border-radius:50%;
+    background:rgba(255,255,255,.3);cursor:pointer;
+    transition:all .3s ease;border:0;padding:0;
+  }
+  #nav .dot:hover{background:rgba(255,255,255,.5);transform:scale(1.15)}
+  #nav .dot.active{background:rgba(255,255,255,.95);width:22px;border-radius:999px}
+  body.light-bg #nav{background:rgba(255,255,255,.25)}
+  body.light-bg #nav .dot{background:rgba(var(--ink-rgb),.25)}
+  body.light-bg #nav .dot.active{background:rgba(var(--ink-rgb),.9)}
+  #hint{
+    position:fixed;bottom:3vh;right:3vw;z-index:30;
+    font-family:var(--font-mono);font-size:10px;
+    letter-spacing:.2em;text-transform:uppercase;
+    opacity:.4;mix-blend-mode:difference;color:#aaa;
+  }
+
+  /* ============ Icons (Lucide) ============ */
+  .ico{width:1em;height:1em;display:inline-block;vertical-align:-.12em;stroke:currentColor;fill:none;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+  .ico-lg{width:2.6vw;height:2.6vw;stroke-width:1.2;display:inline-block;fill:none;stroke:currentColor;stroke-linecap:round;stroke-linejoin:round}
+  .ico-md{width:1.8vw;height:1.8vw;stroke-width:1.3;display:inline-block;vertical-align:-.4em;fill:none;stroke:currentColor;stroke-linecap:round;stroke-linejoin:round}
+  .ico-sm{width:1.1vw;height:1.1vw;stroke-width:1.4;display:inline-block;vertical-align:-.15em;opacity:.7;fill:none;stroke:currentColor;stroke-linecap:round;stroke-linejoin:round}
+
+  /* ============ Signature / 手写 ============ */
+  .sign{font-family:var(--font-handwritten);font-weight:500;font-size:2vw;opacity:.7}
+
+  /* ============ 动效系统 (Motion One) ============ */
+  [data-anim]{opacity:1}
+  body.motion-ready [data-anim]{opacity:0}
+  body.motion-ready [data-anim="left"]{transform:translateX(-24px)}
+  body.motion-ready [data-anim="right"]{transform:translateX(24px)}
+  body.motion-ready [data-anim="line"]{opacity:0;transform:translateY(10px)}
+  body.motion-ready [data-animate="pipeline"] [data-anim]{opacity:.15}
+
+  /* ============ 特殊布局适配 ============ */
+  .layout-icon-grid{
+    display:grid;grid-template-columns:repeat(3,1fr);
+    gap:3vh 3vw;flex:1;align-content:center;
+  }
+  .layout-icon-grid .icon-item{
+    display:flex;flex-direction:column;align-items:center;
+    gap:1.2vh;text-align:center;
+  }
+  .layout-icon-grid .icon-item .icon-label{
+    font-family:var(--font-body-zh);font-weight:500;
+    font-size:max(14px,1.1vw);line-height:1.4;
+  }
+
+  /* ============ 响应式降级 ============ */
+  @media (max-width:900px){
+    .display{font-size:16vw}
+    .display-zh{font-size:12vw}
+    .h-hero{font-size:14vw}
+    .h-xl{font-size:9vw}
+    .h1-zh{font-size:7vw}
+    .pipeline{grid-template-columns:repeat(2,1fr)}
+    .grid-2-7-5,.grid-2-6-6,.grid-2-8-4{grid-template-columns:1fr}
+    .grid-3-3{grid-template-columns:repeat(2,1fr)}
+    .grid-6{grid-template-columns:repeat(2,1fr);grid-template-rows:repeat(3,1fr)}
+    .layout-icon-grid{grid-template-columns:repeat(2,1fr)}
+  }
+</style>
+</head>
+<body>
+
+<canvas id="bg-dark" class="bg"></canvas>
+<canvas id="bg-light" class="bg"></canvas>
+<div id="hint">← → 翻页 · ESC 索引</div>
+
+<div id="deck">
+
+<!-- ============================================================
+     SLIDES 插入区 · 在此处填充所有 <section class="slide ..."> 页面
+     布局参考 references/layouts.md
+     组件参考 references/components.md
+     ============================================================ -->
+
+<!-- ====== Demo Slides (9 pages) ====== -->
+
+<!-- 1. Cover -->
+<section class="slide hero dark">
+  <div class="chrome">
+    <div class="left">peng-skills &middot; Demo</div>
+    <div class="right">01 / 09</div>
+  </div>
+  <div class="frame center" style="min-height:80vh; display:grid; gap:4vh; align-content:center;">
+    <div class="kicker" data-anim>HTML+CSS Slide Deck Generator</div>
+    <h1 class="h-hero" data-anim>peng-slide-deck</h1>
+    <h2 class="h-sub" data-anim>HTML + CSS å¹»ç¯ççæå¨</h2>
+    <p class="lead" style="max-width:58vw" data-anim>
+      åºäº 4 ç»´æ­£äº¤é£æ ¼ç³»ç»ï¼17 ä¸ªç²¾è°é¢è®¾ï¼<br>åæä»¶ HTML è¾åºï¼æµè§å¨æå¼å³ç¨ã
+    </p>
+    <div class="meta-row" data-anim>
+      <span>github.com/SwiftSteed/peng-skills</span>
+    </div>
+  </div>
+  <div class="foot">
+    <div class="title">peng-slide-deck &middot; æµè§å¨åçæ¸²æ</div>
+    <div>&mdash; 2026 &mdash;</div>
+  </div>
+</section>
+
+<!-- 2. Overview -->
+<section class="slide dark" data-animate="directional">
+  <div class="chrome">
+    <div class="left">æ¦è¿° &middot; Overview</div>
+    <div class="right">02 / 09</div>
+  </div>
+  <div class="frame grid-2-6-6" style="margin-top:6vh">
+    <div>
+      <div class="kicker" data-anim="left">WHAT</div>
+      <h2 class="h-xl" data-anim="left">ä»ä¹æ¯<br>peng-slide-deck?</h2>
+      <div class="callout" data-anim="left" style="margin-top:4vh">
+        åºäº <span class="hi">baoyu-slide-deck</span>ï¼JimLiu/baoyu-skillsï¼ç 4 ç»´é£æ ¼ç³»ç»ä¸å®¡æ¥ç®¡çº¿ï¼<br>å° AI çå¾æ¿æ¢ä¸ºçº¯ HTML+CSS è¾åºã
+        <div class="callout-src">&mdash; Forked from JimLiu/baoyu-skills</div>
+      </div>
+    </div>
+    <div>
+      <div class="stat-card" data-anim="right">
+        <div class="stat-label">è¾åº</div>
+        <div class="stat-nb" style="font-size:3vw">åæä»¶ HTML</div>
+        <div class="stat-note">æ åç«¯ï¼ç´æ¥æµè§å¨æå¼</div>
+      </div>
+      <div class="stat-card" data-anim="right" style="margin-top:2vh">
+        <div class="stat-label">é£æ ¼</div>
+        <div class="stat-nb" style="font-size:3vw">525 ç§ç»å</div>
+        <div class="stat-note">çº¹ç &times; æç»ª &times; æç &times; å¯åº¦</div>
+      </div>
+      <div class="stat-card" data-anim="right" style="margin-top:2vh">
+        <div class="stat-label">é¢è®¾</div>
+        <div class="stat-nb" style="font-size:3vw">17 ä¸ª</div>
+        <div class="stat-note">blueprint · corporate · vintage...</div>
+      </div>
+    </div>
+  </div>
+  <div class="foot">
+    <div class="title">åæä»¶ &middot; å¨æ  &middot; é¶ä¾èµ</div>
+    <div>Overview</div>
+  </div>
+</section>
+
+<!-- 3. 4-Dimension Style System -->
+<section class="slide light">
+  <div class="chrome">
+    <div class="left">é£æ ¼ç³»ç» &middot; Style System</div>
+    <div class="right">03 / 09</div>
+  </div>
+  <div class="frame" style="padding-top:5vh">
+    <div class="kicker" data-anim>DESIGN</div>
+    <h2 class="h-xl" data-anim>4 ç»´æ­£äº¤é£æ ¼ç³»ç»</h2>
+    <p class="lead" style="margin-bottom:5vh" data-anim>
+      çº¹ç (5) &times; æç»ª (7) &times; æç (5) &times; å¯åº¦ (3) = <span class="hi">525</span> ç§ CSS ä¸»é¢ç»å
+    </p>
+    <div class="grid-4" style="margin-top:4vh">
+      <div class="stat-card" data-anim>
+        <div class="stat-label">Texture &middot; çº¹ç</div>
+        <div class="stat-nb">5</div>
+        <div class="stat-note">clean / grid / organic / pixel / paper</div>
+      </div>
+      <div class="stat-card" data-anim>
+        <div class="stat-label">Mood &middot; æç»ª</div>
+        <div class="stat-nb">7</div>
+        <div class="stat-note">professional / warm / cool / vibrant / dark / neutral / macaron</div>
+      </div>
+      <div class="stat-card" data-anim>
+        <div class="stat-label">Typography &middot; æç</div>
+        <div class="stat-nb">5</div>
+        <div class="stat-note">geometric / humanist / handwritten / editorial / technical</div>
+      </div>
+      <div class="stat-card" data-anim>
+        <div class="stat-label">Density &middot; å¯åº¦</div>
+        <div class="stat-nb">3</div>
+        <div class="stat-note">minimal / balanced / dense</div>
+      </div>
+    </div>
+  </div>
+  <div class="foot">
+    <div class="title">æ¯ä¸ªç»´åº¦æ å°å°å·ä½ CSS åé</div>
+    <div>Style System</div>
+  </div>
+</section>
+
+<!-- 4. 17 Presets -->
+<section class="slide light">
+  <div class="chrome">
+    <div class="left">é¢è®¾ &middot; Presets</div>
+    <div class="right">04 / 09</div>
+  </div>
+  <div class="frame" style="padding-top:5vh">
+    <div class="kicker" data-anim>PRESETS</div>
+    <h2 class="h-xl" data-anim>17 ä¸ªç²¾è°é¢è®¾</h2>
+    <p class="lead" style="margin-bottom:4vh" data-anim>æ ¹æ®åå®¹å³é®è¯èªå¨æ¨èï¼æ å¹éåéå° blueprint</p>
+    <div class="grid-6" style="margin-top:4vh">
+      <div class="stat-card" data-anim>
+        <div class="stat-label">Blueprint</div>
+        <div class="stat-note">æ¶æ &middot; ç³»ç»è®¾è®¡</div>
+      </div>
+      <div class="stat-card" data-anim>
+        <div class="stat-label">Corporate</div>
+        <div class="stat-note">æèµè &middot; ææ¡</div>
+      </div>
+      <div class="stat-card" data-anim>
+        <div class="stat-label">Minimal</div>
+        <div class="stat-note">é«ç®¡ç®æ¥</div>
+      </div>
+      <div class="stat-card" data-anim>
+        <div class="stat-label">Sketch Notes</div>
+        <div class="stat-note">æç¨ &middot; å­¦ä¹ </div>
+      </div>
+      <div class="stat-card" data-anim>
+        <div class="stat-label">Bold Editorial</div>
+        <div class="stat-note">äº§ååå¸</div>
+      </div>
+      <div class="stat-card" data-anim>
+        <div class="stat-label">Vintage</div>
+        <div class="stat-note">åå² &middot; äººæ</div>
+      </div>
+    </div>
+  </div>
+  <div class="foot">
+    <div class="title">+ 11 ä¸ªé¢è®¾ï¼chalkboard, dark-atmospheric, watercolor...</div>
+    <div>Presets</div>
+  </div>
+</section>
+
+<!-- 5. 8-Step Pipeline -->
+<section class="slide dark" data-animate="pipeline">
+  <div class="chrome">
+    <div class="left">å·¥ä½æµ &middot; Workflow</div>
+    <div class="right">05 / 09</div>
+  </div>
+  <div class="frame">
+    <div class="kicker">PIPELINE</div>
+    <h2 class="h-xl">8 æ­¥å¯å®¡æ¥ç®¡çº¿</h2>
+    <div class="pipeline-section">
+      <div class="pipeline-label">Phase 1 &middot; åæé¶æ®µ</div>
+      <div class="pipeline" data-cols="4">
+        <div class="step" data-anim="step">
+          <div class="step-nb">01</div>
+          <div class="step-title">åæ</div>
+          <div class="step-desc">åå®¹åç±»ãè¯­è¨æ£æµãé£æ ¼æ¨è</div>
+        </div>
+        <div class="step" data-anim="step">
+          <div class="step-nb">02</div>
+          <div class="step-title">ç¡®è®¤</div>
+          <div class="step-desc">é£æ ¼ãåä¼ãé¡µæ°ãå®¡æ¥éé¡¹</div>
+        </div>
+        <div class="step" data-anim="step">
+          <div class="step-nb">03</div>
+          <div class="step-title">å¤§çº²</div>
+          <div class="step-desc">çæ CSS_STYLE_INSTRUCTIONS</div>
+        </div>
+        <div class="step" data-anim="step">
+          <div class="step-nb">04</div>
+          <div class="step-title">å®¡æ¥</div>
+          <div class="step-desc">å®¡æ¥å¤§çº²ï¼å¯éç¼è¾æéçæ</div>
+        </div>
+      </div>
+    </div>
+    <div class="pipeline-section">
+      <div class="pipeline-label">Phase 2 &middot; çæé¶æ®µ</div>
+      <div class="pipeline" data-cols="4">
+        <div class="step" data-anim="step">
+          <div class="step-nb">05</div>
+          <div class="step-title">çæ</div>
+          <div class="step-desc">æ³¨å¥ :root åé + å¸å±æ¨¡æ¿</div>
+        </div>
+        <div class="step" data-anim="step">
+          <div class="step-nb">06</div>
+          <div class="step-title">å®¡æ¥</div>
+          <div class="step-desc">å®¡æ¥ HTMLï¼å¯éç¼è¾æéçæ</div>
+        </div>
+        <div class="step" data-anim="step">
+          <div class="step-nb">07</div>
+          <div class="step-title">é¢è§</div>
+          <div class="step-desc">æµè§å¨ç´æ¥æå¼ index.html</div>
+        </div>
+        <div class="step" data-anim="step">
+          <div class="step-nb">08</div>
+          <div class="step-title">äº¤ä»</div>
+          <div class="step-desc">è¾åºæè¦ï¼Ctrl+P æå° PDF</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="foot">
+    <div class="title">æ &rarr; / ç©ºæ ¼ / æ»è½®éæ­¥æ¨è¿ Pipeline</div>
+    <div>Workflow</div>
+  </div>
+</section>
+
+<!-- 6. VS Comparison -->
+<section class="slide light" data-animate="directional">
+  <div class="chrome">
+    <div class="left">å¯¹æ¯ &middot; Comparison</div>
+    <div class="right">06 / 09</div>
+  </div>
+  <div class="frame" style="padding-top:5vh">
+    <div class="kicker" data-anim>VS</div>
+    <h2 class="h-xl" data-anim>ä¸ baoyu-slide-deck çåºå«</h2>
+    <div class="grid-2-6-6" style="margin-top:5vh; gap:5vw">
+      <div data-anim="left" style="padding:3vh 2vw; border-left:3px solid rgba(0,0,0,.2); opacity:.65">
+        <div class="kicker" style="opacity:.9">baoyu-slide-deck</div>
+        <h3 class="h-md" style="margin-top:2vh">AI çå¾æ¹æ¡</h3>
+        <ul style="margin-top:3vh; padding-left:1.2em; display:flex; flex-direction:column; gap:1.2vh; font-family:var(--font-body-zh); font-size:max(14px,1.05vw); line-height:1.5; opacity:.78">
+          <li>éé¡µè°ç¨çå¾åç«¯</li>
+          <li>è¾åº PNG å¾ç</li>
+          <li>éåå¹¶ PPTX / PDF</li>
+          <li>éèç½ + åç«¯å¯é¥</li>
+        </ul>
+      </div>
+      <div data-anim="right" style="padding:3vh 2vw; border-left:3px solid var(--palette-accent-1)">
+        <div class="kicker" style="opacity:.9">peng-slide-deck</div>
+        <h3 class="h-md" style="margin-top:2vh">HTML+CSS æ¹æ¡</h3>
+        <ul style="margin-top:3vh; padding-left:1.2em; display:flex; flex-direction:column; gap:1.2vh; font-family:var(--font-body-zh); font-size:max(14px,1.05vw); line-height:1.5">
+          <li>ç´æ¥çæ HTML æä»¶</li>
+          <li>æµè§å¨å³æ¶é¢è§</li>
+          <li>Ctrl+P ç´æ¥æå° PDF</li>
+          <li>ç¦»çº¿å¯ç¨ï¼é¶åç«¯ä¾èµ</li>
+        </ul>
+      </div>
+    </div>
+    <div class="callout" style="margin-top:3vh" data-anim>
+      <span class="hi">ç¸åç 4 ç»´é£æ ¼ç³»ç»</span>ï¼ç¸åçå¯å®¡æ¥ç®¡çº¿ï¼ä¸åçåç°æ¹å¼ã
+    </div>
+  </div>
+  <div class="foot">
+    <div class="title">ä¿çæ ¸å¿è®¾è®¡ &middot; æ¢ä¸ç§åç°</div>
+    <div>Comparison</div>
+  </div>
+</section>
+
+<!-- 7. Quick Start -->
+<section class="slide dark">
+  <div class="chrome">
+    <div class="left">å¼å§ &middot; Get Started</div>
+    <div class="right">07 / 09</div>
+  </div>
+  <div class="frame" style="padding-top:6vh">
+    <div class="kicker" data-anim>QUICK START</div>
+    <h2 class="h-xl" data-anim>ä¸æ­¥å¼å§</h2>
+    <div class="grid-3" style="margin-top:6vh">
+      <div class="pillar" data-anim style="padding:3vh 2vw;border:1px solid rgba(255,255,255,.12);border-radius:4px">
+        <div class="ic">01</div>
+        <div class="t">åéä»åº</div>
+        <div class="d" style="font-family:var(--font-mono);font-size:max(11px,.85vw)">git clone<br>peng-skills</div>
+      </div>
+      <div class="pillar" data-anim style="padding:3vh 2vw;border:1px solid rgba(255,255,255,.12);border-radius:4px">
+        <div class="ic">02</div>
+        <div class="t">æ³¨åæè½</div>
+        <div class="d" style="font-family:var(--font-mono);font-size:max(11px,.85vw)">ln -sf peng-slide-deck<br>~/.claude/skills/</div>
+      </div>
+      <div class="pillar" data-anim style="padding:3vh 2vw;border:1px solid rgba(255,255,255,.12);border-radius:4px">
+        <div class="ic">03</div>
+        <div class="t">å¼å§åä½</div>
+        <div class="d" style="font-family:var(--font-mono);font-size:max(11px,.85vw)">/peng-slide-deck<br>article.md</div>
+      </div>
+    </div>
+    <div class="callout" style="margin-top:4vh" data-anim>
+      "ä»åå®¹å°å¹»ç¯çï¼ä¸æ¡å½ä»¤çè·ç¦»ã"
+    </div>
+  </div>
+  <div class="foot">
+    <div class="title">github.com/SwiftSteed/peng-skills</div>
+    <div>Quick Start</div>
+  </div>
+</section>
+
+<!-- 8. Credits -->
+<section class="slide hero dark">
+  <div class="chrome">
+    <div class="left">è´è°¢ &middot; Credits</div>
+    <div class="right">08 / 09</div>
+  </div>
+  <div class="frame center" style="min-height:80vh; display:grid; gap:5vh; align-content:center;">
+    <div class="kicker" data-anim>ACKNOWLEDGMENT</div>
+    <h1 class="h-hero" style="font-size:7vw" data-anim>è´è°¢</h1>
+    <p class="lead" style="max-width:60vw" data-anim>
+      æ¬é¡¹ç®åºäº <span class="hi">baoyu-slide-deck</span> çæ ¸å¿è®¾è®¡——<br>
+      4 ç»´æ­£äº¤é£æ ¼ç³»ç»ã17 ä¸ªç²¾è°é¢è®¾ã8 æ­¥å®¡æ¥ç®¡çº¿<br>
+      åæ¥èª JimLiu ç baoyu-skills é¡¹ç®ã
+    </p>
+    <div class="rule" style="max-width:40vw;margin:0 auto" data-anim></div>
+    <div class="meta-row" data-anim>
+      <span>github.com/JimLiu/baoyu-skills</span>
+    </div>
+  </div>
+  <div class="foot">
+    <div class="title">åºäº baoyu-slide-deck &middot; JimLiu</div>
+    <div>Acknowledgments</div>
+  </div>
+</section>
+
+<!-- 9. Back Cover -->
+<section class="slide hero light">
+  <div class="chrome">
+    <div class="left">peng-slide-deck &middot; Demo</div>
+    <div class="right">09 / 09</div>
+  </div>
+  <div class="frame center" style="min-height:80vh; display:grid; gap:6vh; align-content:center;">
+    <div class="kicker" data-anim>THANK YOU</div>
+    <h1 class="h-hero" style="font-size:8vw" data-anim>æµè§å¨æå¼<br>å³æ¯æä½³å±ç¤º</h1>
+    <p class="lead" style="max-width:52vw" data-anim>
+      Open in Browser &middot; Print to PDF &middot; No Backend, No Image Generation
+    </p>
+    <div class="meta-row" data-anim>
+      <span>github.com/SwiftSteed/peng-skills</span>
+    </div>
+  </div>
+  <div class="foot">
+    <div class="title">peng-slide-deck &middot; Demo</div>
+    <div>&mdash; Fin &mdash;</div>
+  </div>
+</section>
+
+</div>
+
+<div id="nav"></div>
+
+<script>
+/* =============== WebGL 双背景 ===============
+   深色页：Holographic Dispersion（全息色散 · 钛金暗流）—— 彩虹微扰、鼠标径向涟漪
+   浅色页：Spiral Vortex（旋转涡流 · 银色珍珠）—— domain-warp 流动、无中心
+*/
+const VS = `attribute vec2 position;void main(){gl_Position=vec4(position,0.0,1.0);}`;
+
+const FS_DARK = `precision highp float;
+uniform vec2 u_resolution;uniform float u_time;uniform vec2 u_mouse;
+vec3 palette(float t,vec3 a,vec3 b,vec3 c,vec3 d){return a+b*cos(6.28318*(c*t+d));}
+void main(){
+  vec2 uv=gl_FragCoord.xy/u_resolution.xy;
+  vec2 p=uv*2.0-1.0;p.x*=u_resolution.x/u_resolution.y;
+  vec2 m=u_mouse*2.0-1.0;m.x*=u_resolution.x/u_resolution.y;
+  float md=length(p-m);
+  float mr=sin(md*15.0-u_time*4.0)*exp(-md*3.0);p+=mr*0.08;
+  vec2 p0=p;
+  for(float i=1.0;i<4.0;i++){
+    p.x+=0.1/i*sin(i*3.0*p.y+u_time*0.4)+0.05;
+    p.y+=0.1/i*cos(i*2.0*p.x+u_time*0.3)-0.05;
+  }
+  float r=length(p);float ang=atan(p.y,p.x);
+  vec3 a=vec3(0.12,0.12,0.13);
+  vec3 b=vec3(0.03,0.04,0.05);
+  vec3 c=vec3(1.0,1.0,1.0);
+  vec3 d=vec3(0.1,0.2,0.4);
+  vec3 col=palette(r*1.5+p0.x*0.5+u_time*0.1,a,b,c,d);
+  float disp=sin(r*25.0-u_time*1.5+ang*2.0)*0.5+0.5;
+  col+=vec3(disp*0.015,disp*0.01,disp*0.02);
+  float hi=pow(sin(p.x*4.0+p.y*3.0+u_time)*0.5+0.5,8.0);
+  col+=hi*0.08;
+  vec3 base=vec3(0.05,0.05,0.06);
+  col=mix(base,col,0.85);
+  gl_FragColor=vec4(col,1.0);
+}`;
+
+const FS_LIGHT = `precision highp float;
+uniform vec2 u_resolution;uniform float u_time;uniform vec2 u_mouse;
+float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
+float noise(vec2 p){
+  vec2 i=floor(p),f=fract(p);
+  float a=hash(i),b=hash(i+vec2(1,0));
+  float c=hash(i+vec2(0,1)),d=hash(i+vec2(1,1));
+  vec2 u=f*f*(3.0-2.0*f);
+  return mix(a,b,u.x)+(c-a)*u.y*(1.0-u.x)+(d-b)*u.x*u.y;
+}
+float fbm(vec2 p){
+  float v=0.0,a=0.5;
+  mat2 m=mat2(0.80,0.60,-0.60,0.80);
+  for(int i=0;i<5;i++){v+=a*noise(p);p=m*p*2.02;a*=0.5;}
+  return v;
+}
+void main(){
+  vec2 uv=gl_FragCoord.xy/u_resolution.xy;
+  vec2 p=uv;p.x*=u_resolution.x/u_resolution.y;
+  vec2 m=u_mouse;m.x*=u_resolution.x/u_resolution.y;
+  vec2 md=p-m;float dl=length(md);
+  p+=normalize(md+vec2(0.0001))*exp(-dl*5.0)*0.03;
+  vec2 q=vec2(fbm(p*1.8+u_time*0.07),fbm(p*1.8+vec2(5.2,1.3)+u_time*0.06));
+  vec2 r=vec2(fbm(p*2.0+q*1.3+vec2(1.7,9.2)+u_time*0.05),
+              fbm(p*2.0+q*1.3+vec2(8.3,2.8)+u_time*0.04));
+  float f=fbm(p*2.2+r*1.5);
+  vec3 silverDark=vec3(0.86,0.85,0.84);
+  vec3 paper=vec3(0.955,0.945,0.925);
+  vec3 col=mix(silverDark,paper,f);
+  float ph=r.x*2.2+u_time*0.35;
+  col+=vec3(0.78,0.62,0.92)*sin(ph)*0.055;
+  col+=vec3(0.55,0.72,0.95)*sin(ph*0.8+2.0)*0.05;
+  float hl=smoothstep(0.48,0.92,f);
+  col+=hl*0.06;
+  gl_FragColor=vec4(col,1.0);
+}`;
+
+const mouse={x:0.5,y:0.5};
+addEventListener('mousemove',e=>{mouse.x=e.clientX/innerWidth;mouse.y=e.clientY/innerHeight});
+
+function bootGL(canvasId, fsSrc){
+  const canvas=document.getElementById(canvasId);
+  const gl=canvas.getContext('webgl',{alpha:false,antialias:true});
+  if(!gl) return ()=>false;
+  const mk=(t,s)=>{const sh=gl.createShader(t);gl.shaderSource(sh,s);gl.compileShader(sh);return sh};
+  const prog=gl.createProgram();
+  gl.attachShader(prog,mk(gl.VERTEX_SHADER,VS));
+  gl.attachShader(prog,mk(gl.FRAGMENT_SHADER,fsSrc));
+  gl.linkProgram(prog);gl.useProgram(prog);
+  const buf=gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER,buf);
+  gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,1,-1,-1,1,-1,1,1,-1,1,1]),gl.STATIC_DRAW);
+  const pos=gl.getAttribLocation(prog,'position');
+  gl.enableVertexAttribArray(pos);gl.vertexAttribPointer(pos,2,gl.FLOAT,false,0,0);
+  const lRes=gl.getUniformLocation(prog,'u_resolution');
+  const lT=gl.getUniformLocation(prog,'u_time');
+  const lM=gl.getUniformLocation(prog,'u_mouse');
+  const resize=()=>{
+    const d=Math.min(window.devicePixelRatio||1,2);
+    canvas.width=innerWidth*d;canvas.height=innerHeight*d;
+    gl.viewport(0,0,canvas.width,canvas.height);
+  };
+  addEventListener('resize',resize);resize();
+  return (tSec)=>{
+    gl.uniform2f(lRes,canvas.width,canvas.height);
+    gl.uniform1f(lT,tSec);
+    gl.uniform2f(lM,mouse.x,1-mouse.y);
+    gl.drawArrays(gl.TRIANGLES,0,6);
+    return true;
+  };
+}
+const drawDark=bootGL('bg-dark',FS_DARK);
+const drawLight=bootGL('bg-light',FS_LIGHT);
+const t0=Date.now();
+(function loop(){
+  const t=(Date.now()-t0)/1000;
+  drawDark(t);drawLight(t);
+  requestAnimationFrame(loop);
+})();
+
+// =============== 导航（翻页 / 圆点 / 键盘 / 滚轮 / 触屏） ===============
+const deck=document.getElementById('deck');
+const slides=deck.querySelectorAll('.slide');
+const nav=document.getElementById('nav');
+let idx=0,total=slides.length,lock=false;
+
+deck.style.width=(total*100)+'vw';
+
+slides.forEach((s,i)=>{
+  const b=document.createElement('button');
+  b.className='dot';b.dataset.i=i;b.setAttribute('aria-label','Page '+(i+1));
+  b.onclick=()=>go(i);
+  nav.appendChild(b);
+});
+
+function go(n){
+  if(lock)return;
+  idx=Math.max(0,Math.min(total-1,n));
+  deck.style.transform=`translateX(${-idx*100}vw)`;
+  nav.querySelectorAll('.dot').forEach((d,i)=>d.classList.toggle('active',i===idx));
+  const el=slides[idx];
+  const th=el.dataset.theme || (el.classList.contains('light')?'light':(el.classList.contains('dark')?'dark':'dark'));
+  document.body.classList.toggle('light-bg',th==='light');
+  if(window.__playSlide) setTimeout(()=>window.__playSlide(idx), 450);
+  lock=true;setTimeout(()=>lock=false,700);
+}
+
+/* =============== ESC 索引视图 =============== */
+let overviewOn=false;
+const ov=document.createElement('div');
+ov.id='overview';
+ov.style.cssText='position:fixed;inset:0;z-index:100;background:rgba(var(--ink-rgb),.92);backdrop-filter:blur(12px);display:none;overflow-y:auto;padding:4vh 4vw';
+document.body.appendChild(ov);
+
+function buildOverview(){
+  ov.innerHTML='';
+  const grid=document.createElement('div');
+  grid.style.cssText='display:grid;grid-template-columns:repeat(4,1fr);gap:2vh 1.6vw;max-width:90vw;margin:0 auto';
+  slides.forEach((s,i)=>{
+    const card=document.createElement('div');
+    card.style.cssText='cursor:pointer;border-radius:6px;overflow:hidden;border:2px solid '+(i===idx?'rgba(var(--paper-rgb),.8)':'rgba(var(--paper-rgb),.15)')+';transition:border-color .2s';
+    card.onmouseenter=()=>card.style.borderColor='rgba(var(--paper-rgb),.6)';
+    card.onmouseleave=()=>card.style.borderColor=i===idx?'rgba(var(--paper-rgb),.8)':'rgba(var(--paper-rgb),.15)';
+    const wrap=document.createElement('div');
+    wrap.style.cssText='width:100%;aspect-ratio:16/9;overflow:hidden;position:relative;pointer-events:none;background:'+(s.classList.contains('light')?'var(--paper)':'var(--ink)');
+    const clone=s.cloneNode(true);
+    clone.style.cssText='width:100vw;height:100vh;transform:scale('+(1/4.5)+');transform-origin:top left;position:absolute;top:0;left:0;pointer-events:none';
+    wrap.appendChild(clone);
+    const label=document.createElement('div');
+    label.style.cssText='padding:6px 10px;font-family:var(--font-mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--paper);opacity:.7';
+    label.textContent=(i+1)+' / '+total;
+    card.appendChild(wrap);
+    card.appendChild(label);
+    card.onclick=()=>{toggleOverview();go(i)};
+    grid.appendChild(card);
+  });
+  ov.appendChild(grid);
+}
+
+function toggleOverview(){
+  overviewOn=!overviewOn;
+  if(overviewOn){buildOverview();ov.style.display='block';}
+  else{ov.style.display='none';}
+}
+
+addEventListener('keydown',e=>{
+  if(e.key==='Escape'){e.preventDefault();toggleOverview();return;}
+  if(overviewOn)return;
+  if(e.key==='ArrowRight'||e.key==='PageDown'||e.key===' '||e.key==='ArrowDown'){
+    if(window.__pipeAdvance && window.__pipeAdvance()) return;
+    go(idx+1);
+    return;
+  }
+  if(e.key==='ArrowLeft'||e.key==='PageUp'||e.key==='ArrowUp')go(idx-1);
+  if(e.key==='Home')go(0);
+  if(e.key==='End')go(total-1);
+});
+
+let wheelTO=null,wheelAcc=0;
+addEventListener('wheel',e=>{
+  wheelAcc+=e.deltaY+e.deltaX;
+  if(Math.abs(wheelAcc)>50){
+    if(wheelAcc>0 && window.__pipeAdvance && window.__pipeAdvance()){
+      wheelAcc=0;
+    }else{
+      go(idx+(wheelAcc>0?1:-1));wheelAcc=0;
+    }
+  }
+  clearTimeout(wheelTO);wheelTO=setTimeout(()=>wheelAcc=0,150);
+},{passive:true});
+
+let tx=0,ty=0;
+addEventListener('touchstart',e=>{tx=e.touches[0].clientX;ty=e.touches[0].clientY},{passive:true});
+addEventListener('touchend',e=>{
+  const dx=(e.changedTouches[0].clientX-tx);
+  const dy=(e.changedTouches[0].clientY-ty);
+  if(Math.abs(dx)>50&&Math.abs(dx)>Math.abs(dy)){
+    if(dx<0 && window.__pipeAdvance && window.__pipeAdvance()) return;
+    go(idx+(dx<0?1:-1));
+  }
+},{passive:true});
+
+go(0);
+</script>
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<script>lucide.createIcons();</script>
+
+<!-- ============ Motion One 动效引擎 ============ -->
+<script type="module">
+let motion;
+try {
+  motion = await import('../peng-slide-deck/assets/motion.min.js');
+} catch(e1) {
+  try {
+    motion = await import('https://cdn.jsdelivr.net/npm/motion@11.11.17/+esm');
+  } catch(e2) {
+    console.warn('[motion] local + CDN both failed, disabling animations', e1, e2);
+    document.querySelectorAll('[data-anim]').forEach(el=>{el.style.opacity='1';el.style.transform='none'});
+    document.querySelectorAll('[data-animate="pipeline"] [data-anim]').forEach(el=>el.style.opacity='1');
+  }
+}
+
+if(motion){
+  const { animate, stagger } = motion;
+  document.body.classList.add('motion-ready');
+  const EASE = [.22, 1, .36, 1];
+  const slides = [...document.querySelectorAll('.slide')];
+  let pipeStep = -1;
+  let lastIdx = -1;
+
+  function resetAnims(slide){
+    slide.querySelectorAll('[data-anim]').forEach(el=>{
+      el.style.opacity='';
+      el.style.transform='';
+    });
+  }
+
+  function playSlide(i){
+    const slide = slides[i];
+    if(!slide) return;
+    lastIdx = i;
+    const recipe = slide.dataset.animate || (slide.classList.contains('hero') ? 'hero' : 'cascade');
+
+    if(recipe === 'pipeline'){
+      pipeStep = -1;
+      slide.querySelectorAll('[data-anim]').forEach(el=>{
+        el.style.opacity='0.15';
+        el.style.transform='none';
+      });
+      return;
+    }
+
+    resetAnims(slide);
+    const all = [...slide.querySelectorAll('[data-anim]')];
+    if(!all.length) return;
+
+    if(recipe === 'directional'){
+      const lefts  = all.filter(el=>el.dataset.anim==='left');
+      const divs   = all.filter(el=>el.dataset.anim==='divider');
+      const rights = all.filter(el=>el.dataset.anim==='right');
+      const others = all.filter(el=>!['left','right','divider'].includes(el.dataset.anim));
+      if(others.length) animate(others, {opacity:[0,1], y:[12,0]}, {duration:.6, delay:stagger(.1, {start:.15}), easing:EASE});
+      if(lefts.length)  animate(lefts,  {opacity:[0,1], x:[-24,0]}, {duration:.8, delay:.35, easing:EASE});
+      if(divs.length)   animate(divs,   {opacity:[0,.25]},          {duration:.5, delay:.9});
+      if(rights.length) animate(rights, {opacity:[0,1], x:[24,0]},  {duration:.8, delay:1.0, easing:EASE});
+      return;
+    }
+
+    if(recipe === 'quote'){
+      const lines = all.filter(el=>el.dataset.anim==='line');
+      const others = all.filter(el=>el.dataset.anim!=='line');
+      if(others.length) animate(others, {opacity:[0,1], y:[8,0]},    {duration:.6, delay:stagger(.12, {start:.2}), easing:EASE});
+      if(lines.length)  animate(lines,  {opacity:[.35,1], y:[10,0]}, {duration:.8, delay:stagger(.55, {start:.5}), easing:EASE});
+      return;
+    }
+
+    if(recipe === 'hero'){
+      animate(all, {opacity:[0,1], y:[14,0]}, {duration:.9, delay:stagger(.16, {start:.2}), easing:EASE});
+      return;
+    }
+
+    // default: cascade
+    animate(all, {opacity:[0,1], y:[16,0]}, {duration:.75, delay:stagger(.1, {start:.15}), easing:EASE});
+  }
+
+  function pipeAdvance(){
+    const slide = slides[lastIdx];
+    if(!slide || slide.dataset.animate !== 'pipeline') return false;
+    const steps  = [...slide.querySelectorAll('[data-anim="step"]')];
+    const arrows = [...slide.querySelectorAll('[data-anim="arrow"]')];
+    if(pipeStep >= steps.length - 1) return false;
+    pipeStep++;
+    animate(steps[pipeStep], {opacity:[0.15,1], y:[8,0]}, {duration:.5, easing:EASE});
+    if(pipeStep > 0 && arrows[pipeStep-1]){
+      animate(arrows[pipeStep-1], {opacity:[0.15,.7]}, {duration:.3, delay:.15});
+    }
+    return true;
+  }
+
+  window.__playSlide = playSlide;
+  window.__pipeAdvance = pipeAdvance;
+
+  // 首屏补触发
+  playSlide(0);
+}
+</script>
+</body>
+</html>

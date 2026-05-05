@@ -21,7 +21,7 @@
 ## 快速开始
 
 ```bash
-git clone https://github.com/peng2219/peng-skills.git
+git clone https://github.com/SwiftSteed/peng-skills.git
 ln -sf $(pwd)/peng-skills/peng-slide-deck ~/.claude/skills/peng-slide-deck
 ```
 
@@ -63,6 +63,12 @@ ln -sf $(pwd)/peng-skills/peng-slide-deck ~/.claude/skills/peng-slide-deck
 | `--outline-only` | 仅生成大纲，跳过 HTML |
 | `--html-only` | 仅生成 HTML，跳过审查 |
 | `--theme <name>` | 主题色：ink, indigo, forest, kraft, dune |
+
+### 在线演示
+
+在浏览器中体验完整效果——WebGL 背景、翻页动效、入场动画：
+
+→ **[在线演示](https://swiftsteed.github.io/peng-skills/demo/)** ←
 
 ![peng-slide-deck 截图](./screenshots/peng-slide-deck-zh.png)
 

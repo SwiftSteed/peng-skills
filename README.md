@@ -21,7 +21,7 @@ A collection of skills for content creation workflows.
 ## Quick Start
 
 ```bash
-git clone https://github.com/peng2219/peng-skills.git
+git clone https://github.com/SwiftSteed/peng-skills.git
 ln -sf $(pwd)/peng-skills/peng-slide-deck ~/.claude/skills/peng-slide-deck
 ```
 
@@ -63,6 +63,12 @@ Transform content into a single-file HTML slide deck — no image generation bac
 | `--outline-only` | Generate outline only, skip HTML |
 | `--html-only` | Generate HTML only, skip review |
 | `--theme <name>` | Color theme: ink, indigo, forest, kraft, dune |
+
+### Live Demo
+
+Try it in your browser — full WebGL backgrounds, page transitions, and animations:
+
+→ **[Live Demo](https://swiftsteed.github.io/peng-skills/demo/)** ←
 
 ![peng-slide-deck screenshot](./screenshots/peng-slide-deck-en.png)
 
