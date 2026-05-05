@@ -4,7 +4,7 @@
 
 **AI Agent Skills for Content Creation**
 
-A collection of [Claude Code skills](https://docs.anthropic.com/en/docs/claude-code/skills) for content creation workflows.
+A collection of skills for content creation workflows.
 
 [English](./README.md) · [中文](./README.zh-CN.md)
 

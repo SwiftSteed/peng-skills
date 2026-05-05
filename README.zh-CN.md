@@ -4,7 +4,7 @@
 
 **AI Agent Skills for Content Creation**
 
-[Claude Code skills](https://docs.anthropic.com/en/docs/claude-code/skills) 形式的内容创作技能合集。
+内容创作技能合集。
 
 [English](./README.md) · [中文](./README.zh-CN.md)
 
