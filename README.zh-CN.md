@@ -27,6 +27,7 @@ ln -sf $(pwd)/peng-skills/peng-slide-deck ~/.claude/skills/peng-slide-deck
 
 ## peng-slide-deck
 
+> [!NOTE]
 > 基于 [JimLiu](https://github.com/JimLiu) 的 [baoyu-slide-deck](https://github.com/JimLiu/baoyu-skills)。将生图换成纯 HTML+CSS 输出——保留 4 维风格系统和可审查管线，用浏览器原生渲染。
 
 将内容转化为单文件 HTML 幻灯片——无需生图后端、无需 PPT 工具，浏览器打开即用。
@@ -62,6 +63,8 @@ ln -sf $(pwd)/peng-skills/peng-slide-deck ~/.claude/skills/peng-slide-deck
 | `--outline-only` | 仅生成大纲，跳过 HTML |
 | `--html-only` | 仅生成 HTML，跳过审查 |
 | `--theme <name>` | 主题色：ink, indigo, forest, kraft, dune |
+
+![peng-slide-deck 截图](./screenshots/peng-slide-deck-zh.png)
 
 ### 核心特性
 

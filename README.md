@@ -27,7 +27,8 @@ ln -sf $(pwd)/peng-skills/peng-slide-deck ~/.claude/skills/peng-slide-deck
 
 ## peng-slide-deck
 
-> Based on [baoyu-slide-deck](https://github.com/JimLiu/baoyu-skills) by [JimLiu](https://github.com/JimLiu). Replaces image generation with pure HTML+CSS output — same 4-dimension style system and reviewable pipeline, browser-native rendering.
+> [!NOTE]
+> Forked from [baoyu-slide-deck](https://github.com/JimLiu/baoyu-skills) by [JimLiu](https://github.com/JimLiu). Replaces image generation with pure HTML+CSS output — same 4-dimension style system and reviewable pipeline, browser-native rendering.
 
 Transform content into a single-file HTML slide deck — no image generation backend, no PPT tooling, just open in a browser and present.
 
@@ -62,6 +63,8 @@ Transform content into a single-file HTML slide deck — no image generation bac
 | `--outline-only` | Generate outline only, skip HTML |
 | `--html-only` | Generate HTML only, skip review |
 | `--theme <name>` | Color theme: ink, indigo, forest, kraft, dune |
+
+![peng-slide-deck screenshot](./screenshots/peng-slide-deck-en.png)
 
 ### Key Features
 
