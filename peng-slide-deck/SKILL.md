@@ -211,6 +211,9 @@ slide-deck/{topic-slug}/
 
 布局选择参考 `references/layouts.md`。组件细节参考 `references/components.md`。
 
+> [!IMPORTANT]
+> **编码安全**：必须使用 `Write` 工具直接写入 `index.html`。禁止通过 Bash heredoc、Python 脚本等间接方式生成最终 HTML 文件——中文内容经过多层编码链（heredoc → shell → Python → 文件）极易发生双重 UTF-8 编码损坏，导致浏览器显示乱码。
+
 `--html-only` 时在此停止。
 
 ### Step 6: 审查 HTML（条件性）
