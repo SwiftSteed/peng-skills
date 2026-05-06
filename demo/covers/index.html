@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>peng-cover-image · Demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;500;600;700;900&family=Noto+Sans+SC:wght@300;400;500;700;900&family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@300;400;500;600;700&family=Caveat:wght@400;500;600;700&family=Klee+One:wght@400;600&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900&display=swap" rel="stylesheet">
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  html,body{width:100%;min-height:100%}
+  body{
+    background:#1a1a1c;color:#e2e8f0;
+    font-family:'Noto Sans SC','PingFang SC',sans-serif;
+    -webkit-font-smoothing:antialiased;
+    padding:clamp(16px,3vh,32px);
+    display:flex;flex-direction:column;align-items:center;
+    gap:clamp(20px,4vh,48px);
+  }
+  .section-label{
+    font-family:'JetBrains Mono','SF Mono',monospace;
+    font-size:12px;letter-spacing:.2em;opacity:.4;
+    text-align:center;margin-bottom:-12px;
+  }
+  .cover{
+    width:min(100vw - 64px, 90vh * 16 / 9);
+    aspect-ratio:16/9;
+    border-radius:12px;overflow:hidden;position:relative;
+    box-shadow:0 4px 32px rgba(0,0,0,.4);
+  }
+  .cover::before{content:"";position:absolute;inset:0;pointer-events:none;z-index:0}
+
+  /* --- cool / conceptual --- */
+  .cover-1{background:#0F172A;color:#E2E8F0}
+  .cover-1 .title{font-family:'Noto Sans SC','PingFang SC',sans-serif;font-weight:800;font-size:clamp(32px,5vw,64px);line-height:1.1}
+  .cover-1 .subtitle{font-family:'Noto Sans SC','PingFang SC',sans-serif;font-size:clamp(14px,1.8vw,22px);color:#94A3B8}
+  .cover-1 .tag{background:rgba(37,99,235,.18);color:#60A5FA}
+  .cover-1 .geo-circle{border:2px solid #2563EB;opacity:.15}
+  .cover-1 .geo-rect{border:1.5px solid #2563EB;opacity:.1}
+  .cover-1 .geo-dot{background:#2563EB;opacity:.12}
+
+  /* --- warm / hero --- */
+  .cover-2{background:#1A1410;color:#FEE2D7}
+  .cover-2 .title{font-family:'Noto Serif SC','PingFang SC','Songti SC',serif;font-weight:900;font-size:clamp(36px,5.5vw,72px);line-height:1.08;text-align:center}
+  .cover-2 .subtitle{font-family:'Noto Sans SC','PingFang SC',sans-serif;font-size:clamp(14px,1.8vw,22px);color:#D4A090;text-align:center}
+  .cover-2 .tag{background:rgba(237,137,54,.18);color:#F6AD55}
+  .cover-2 .geo-circle{border:2px solid #ED8936;opacity:.12}
+  .cover-2 .geo-dot{background:#ED8936;opacity:.1}
+
+  /* --- dark / hero --- */
+  .cover-3{background:#0A0A0F;color:#E8E0F0}
+  .cover-3 .title{font-family:'Noto Sans SC','PingFang SC',sans-serif;font-weight:800;font-size:clamp(40px,6vw,80px);line-height:1.06;text-align:center;background:linear-gradient(135deg,#8B5CF6,#06B6D4);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+  .cover-3 .subtitle{font-family:'Noto Sans SC','PingFang SC',sans-serif;font-size:clamp(14px,1.8vw,22px);color:#A898C0;text-align:center}
+  .cover-3 .tag{background:rgba(139,92,246,.18);color:#A78BFA}
+  .cover-3 .geo-circle{border:2px solid #8B5CF6;opacity:.1}
+
+  /* --- macaron / minimal --- */
+  .cover-4{background:#F5F0E8;color:#4A3B32}
+  .cover-4 .title{font-family:'Noto Serif SC','PingFang SC','Songti SC',serif;font-weight:300;font-size:clamp(28px,3.5vw,44px);line-height:1.3;color:#4A3B32}
+  .cover-4 .subtitle{font-size:clamp(13px,1.6vw,18px);color:#8B7B6F}
+  .cover-4 .tag{background:rgba(232,101,90,.12);color:#C05048}
+  .cover-4 .geo-rect{border:1px solid #A8D8EA;opacity:.25}
+
+  /* --- duotone / typography --- */
+  .cover-5{background:#0A0605;color:#F0E0C0}
+  .cover-5 .title{font-family:'Noto Serif SC','PingFang SC','Songti SC',serif;font-weight:900;font-size:clamp(48px,8vw,100px);line-height:.88;color:#E8751A}
+  .cover-5 .subtitle{font-size:clamp(13px,1.6vw,20px);color:rgba(240,224,192,.55)}
+
+  .content{
+    position:relative;z-index:2;height:100%;
+    display:flex;flex-direction:column;gap:clamp(8px,2vh,24px);
+    padding:clamp(32px,6vh,72px) clamp(24px,6vw,72px);
+  }
+  .type-hero .content{justify-content:center;align-items:center}
+  .type-conceptual .content{justify-content:center;align-items:flex-start;padding-left:clamp(32px,8vw,72px)}
+  .type-typography .content{justify-content:center;align-items:flex-start;padding-left:clamp(24px,6vw,56px)}
+  .type-minimal .content{justify-content:center;align-items:flex-start;padding-left:clamp(40px,8vw,72px)}
+  .tags{display:flex;gap:8px;flex-wrap:wrap;margin-top:clamp(4px,1vh,12px)}
+  .tag{
+    padding:4px 14px;border-radius:99px;font-size:clamp(10px,1.2vw,13px);
+    font-family:'JetBrains Mono','SF Mono',monospace;letter-spacing:.08em;font-weight:600;
+  }
+  .brand{
+    position:absolute;bottom:clamp(20px,4vh,36px);right:clamp(24px,6vw,56px);
+    font-family:'JetBrains Mono','SF Mono',monospace;font-size:clamp(10px,1.2vw,13px);
+    opacity:.3;letter-spacing:.15em;z-index:2;
+  }
+  .geo{position:absolute;inset:0;pointer-events:none}
+  .geo-circle{border-radius:50%}
+  @media (max-width:640px){
+    .cover{width:calc(100vw - 32px)}
+    .type-conceptual .content,.type-typography .content,.type-minimal .content{padding-left:clamp(16px,4vw,28px)}
+  }
+</style>
+</head>
+<body>
+
+<div class="section-label">peng-cover-image · Demo</div>
+
+<!-- 1. cool + conceptual + flat-vector + tech -->
+<div class="cover cover-1 type-conceptual">
+  <div class="geo">
+    <div class="geo-circle" style="position:absolute;width:clamp(120px,22vw,340px);height:clamp(120px,22vw,340px);top:-8%;right:-4%"></div>
+    <div class="geo-rect" style="position:absolute;width:clamp(60px,10vw,140px);height:clamp(60px,10vw,140px);bottom:18%;left:-2%;transform:rotate(12deg)"></div>
+    <div class="geo-dot" style="position:absolute;width:clamp(18px,3vw,44px);height:clamp(18px,3vw,44px);top:22%;right:18%"></div>
+  </div>
+  <div class="content">
+    <h1 class="title" style="max-width:70%">AI Agent Skills<br>for Content Creation</h1>
+    <p class="subtitle">Transform content into HTML slides, cards, and covers</p>
+    <div class="tags">
+      <span class="tag">OPEN SOURCE</span>
+      <span class="tag">HTML+CSS</span>
+    </div>
+  </div>
+  <div class="brand">peng-skills</div>
+</div>
+
+<div class="section-label">cool · conceptual · tech</div>
+
+<!-- 2. warm + hero + human-interest -->
+<div class="cover cover-2 type-hero">
+  <div class="geo">
+    <div class="geo-circle" style="position:absolute;width:clamp(140px,25vw,380px);height:clamp(140px,25vw,380px);top:50%;left:50%;transform:translate(-50%,-50%)"></div>
+    <div class="geo-dot" style="position:absolute;width:clamp(30px,4vw,60px);height:clamp(30px,4vw,60px);top:12%;right:25%"></div>
+  </div>
+  <div class="content">
+    <h1 class="title">生活需要留白<br>也需要色彩</h1>
+    <p class="subtitle">在快节奏里找到属于自己的慢角落</p>
+    <div class="tags">
+      <span class="tag">LIFESTYLE</span>
+      <span class="tag">WELLNESS</span>
+    </div>
+  </div>
+  <div class="brand">生活月刊</div>
+</div>
+
+<div class="section-label">warm · hero · lifestyle</div>
+
+<!-- 3. dark + hero + gradient text -->
+<div class="cover cover-3 type-hero">
+  <div class="geo">
+    <div class="geo-circle" style="position:absolute;width:clamp(160px,28vw,440px);height:clamp(160px,28vw,440px);top:50%;left:50%;transform:translate(-50%,-50%)"></div>
+  </div>
+  <div class="content">
+    <h1 class="title">The Future<br>of Gaming</h1>
+    <p class="subtitle">Real-time ray tracing meets AI-driven NPCs</p>
+    <div class="tags">
+      <span class="tag">GAMING</span>
+      <span class="tag">TECH</span>
+    </div>
+  </div>
+  <div class="brand">GAME INSIDER</div>
+</div>
+
+<div class="section-label">dark · hero · gradient text · gaming</div>
+
+<!-- 4. macaron + minimal + education -->
+<div class="cover cover-4 type-minimal">
+  <div class="geo">
+    <div class="geo-rect" style="position:absolute;width:clamp(40px,6vw,80px);height:100%;right:clamp(48px,10vw,120px);top:0"></div>
+  </div>
+  <div class="content">
+    <h1 class="title">为智能体设计<br>Designing for Agents</h1>
+    <p class="subtitle">交互范式的下一次跃迁</p>
+    <div class="tags">
+      <span class="tag">AI</span>
+      <span class="tag">DESIGN</span>
+    </div>
+  </div>
+  <div class="brand" style="color:#8B7B6F">设计笔记</div>
+</div>
+
+<div class="section-label">macaron · minimal · education</div>
+
+<!-- 5. duotone + typography + editorial -->
+<div class="cover cover-5 type-typography">
+  <div class="content">
+    <h1 class="title">ROME<br>1972</h1>
+    <p class="subtitle" style="margin-top:clamp(8px,2vh,20px)">A visual journey through the eternal city's forgotten summer</p>
+    <div class="tags">
+      <span class="tag">PHOTOGRAPHY</span>
+    </div>
+  </div>
+  <div class="brand">ESSAYS</div>
+</div>
+
+<div class="section-label">duotone · typography · editorial</div>
+
+</body>
+</html>

@@ -18,6 +18,7 @@
 |------|------|
 | [peng-slide-deck](./peng-slide-deck/SKILL.md) | HTML+CSS 幻灯片生成器 — 17 套精调视觉风格（纹理×色彩×字体×密度可自由组合）、8 步流水线 |
 | [peng-image-cards](./peng-image-cards/SKILL.md) | HTML+CSS 竖屏卡片生成器 — 12 风格 × 8 布局 × 3 配色，输出为可滚动网页。适用于公众号排版、邮件、网页嵌入 |
+| [peng-cover-image](./peng-cover-image/SKILL.md) | HTML+CSS 文章封面生成器 — 6 种构图 × 11 套配色 × 7 种渲染 × 4 级文字。浏览器预览，截图即社交分享图 |
 
 ## 快速开始
 
@@ -113,6 +114,36 @@ ln -sf $(pwd)/peng-skills/peng-slide-deck ~/.claude/skills/peng-slide-deck
 - **28 个预设**：风格+布局快捷组合，覆盖各种内容类型
 - **竖屏滚动**：手机优先 3:4 卡片比例，scroll-snap 逐张滑动
 - **多场景分发**：截图发社交媒体、嵌入公众号文章、邮件友好 HTML
+
+## peng-cover-image
+
+> [!NOTE]
+> 基于 [JimLiu](https://github.com/JimLiu) 的 [baoyu-cover-image](https://github.com/JimLiu/baoyu-skills#baoyu-cover-image)。将生图换成纯 HTML+CSS 输出——保留 5 维定制系统（Type × Palette × Rendering × Text × Mood），用浏览器原生渲染。
+
+生成单页文章封面 HTML——一页即封面，浏览器打开，截图即用。
+
+### 用法
+
+```bash
+/peng-cover-image path/to/article.md
+/peng-cover-image path/to/article.md --type hero --palette warm
+/peng-cover-image path/to/article.md --aspect 2.35:1 --text title-subtitle
+/peng-cover-image path/to/article.md --title "标题" --author "作者名"
+```
+
+### 在线演示
+
+→ **[在线演示](https://swiftsteed.github.io/peng-skills/demo/covers/)** ←
+
+### 核心特性
+
+- **5 个维度**：Type (6) × Palette (11) × Rendering (7) × Text (4) × Mood (3)
+- **6 种比例**：16:9、2.35:1、4:3、3:2、1:1、3:4 — 从宽银幕到正方形
+- **11 套配色**：warm、elegant、cool、dark、earth、vivid、pastel、mono、retro、duotone、macaron
+- **7 种渲染风格**：flat-vector、hand-drawn、painterly、digital、pixel、chalk、screen-print
+- **4 种字体族**：clean、handwritten、serif、display
+- **内容自动匹配**：关键词 → 推荐 Type + Palette
+- **截图即用**：浏览器打开，Cmd+Shift+4 截图，用作 og:image、文章头图、邮件封面
 
 ## 许可证
 

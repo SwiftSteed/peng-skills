@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>[必填] 标题 · Cover</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;500;600;700;900&family=Noto+Sans+SC:wght@300;400;500;700;900&family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@300;400;500;600;700&family=Caveat:wght@400;500;600;700&family=Klee+One:wght@400;600&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    /* ============================================================
+       ============ 比例 ============
+       ============================================================ */
+    --aspect-ratio: 16 / 9;
+    --cover-max-width: 100vw;
+    --cover-max-height: 100vh;
+
+    /* ============================================================
+       ============ 配色（默认: cool） ============
+       ============================================================ */
+    --bg: #0F172A;
+    --bg-rgb: 15,23,42;
+    --text: #E2E8F0;
+    --text-secondary: #94A3B8;
+    --accent-1: #2563EB;
+    --accent-1-rgb: 37,99,235;
+    --accent-2: #1E3A5F;
+    --accent-2-rgb: 30,58,95;
+    --tag-bg: rgba(37,99,235,.2);
+    --tag-text: #60A5FA;
+
+    /* ============================================================
+       ============ Mood: 对比度（默认: balanced） ============
+       ============================================================ */
+    --contrast-bg: .92;
+    --contrast-text: 1;
+    --contrast-accent: 1;
+
+    /* ============================================================
+       ============ Font（默认: clean） ============
+       ============================================================ */
+    --font-headline: 'Noto Sans SC', 'PingFang SC', sans-serif;
+    --font-body: 'Noto Sans SC', 'PingFang SC', sans-serif;
+    --font-display: 'Inter', -apple-system, sans-serif;
+    --font-hand: 'Caveat', 'Klee One', 'Kaiti SC', cursive;
+    --font-mono: 'JetBrains Mono', 'SF Mono', monospace;
+
+    /* ============================================================
+       ============ 排版 ============
+       ============================================================ */
+    --title-size: clamp(32px, 5vw, 72px);
+    --title-weight: 800;
+    --subtitle-size: clamp(16px, 2.2vw, 28px);
+    --author-size: clamp(12px, 1.5vw, 16px);
+    --tag-size: clamp(10px, 1.2vw, 13px);
+
+    /* ============================================================
+       ============ 装饰 ============
+       ============================================================ */
+    --border-radius: 0px;
+    --decoration-opacity: .12;
+    --geometric-shapes: block;
+    --grain-overlay: none;
+    --border-style: none;
+  }
+
+  /* ============================================================
+     ============ 全局 ============
+     ============================================================ */
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  html,body{width:100%;height:100%}
+  body{
+    display:flex;align-items:center;justify-content:center;
+    background:#1a1a1c;
+    font-family:var(--font-body);
+    -webkit-font-smoothing:antialiased;
+    padding:clamp(8px,2vh,24px);
+  }
+
+  .cover{
+    width:min(var(--cover-max-width), calc(var(--cover-max-height) * 16 / 9));
+    aspect-ratio:var(--aspect-ratio);
+    max-width:var(--cover-max-width);
+    max-height:var(--cover-max-height);
+    background:var(--bg);
+    color:var(--text);
+    position:relative;overflow:hidden;
+    display:flex;flex-direction:column;
+    border-radius:var(--border-radius);
+  }
+
+  /* ============================================================
+     ============ 背景装饰层 ============
+     ============================================================ */
+  .cover::before{
+    content:"";position:absolute;inset:0;pointer-events:none;
+    opacity:var(--contrast-bg);
+  }
+
+  /* 几何图形 */
+  .geo{position:absolute;pointer-events:none;display:var(--geometric-shapes)}
+  .geo-circle{
+    border-radius:50%;border:2px solid var(--accent-1);
+    opacity:calc(var(--decoration-opacity) * 1.5);
+  }
+  .geo-rect{
+    border:1.5px solid var(--accent-1);opacity:var(--decoration-opacity);
+  }
+  .geo-dot{
+    border-radius:50%;background:var(--accent-1);opacity:var(--decoration-opacity);
+  }
+
+  /* 纹理 */
+  .grain{
+    position:absolute;inset:0;pointer-events:none;display:var(--grain-overlay);
+    background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.7' numOctaves='3'/></filter><rect width='200' height='200' filter='url(#n)' opacity='.04'/></svg>");
+  }
+
+  /* 网点 */
+  .halftone{
+    position:absolute;inset:0;pointer-events:none;display:none;
+    background-image:radial-gradient(circle,var(--text) .5px,transparent .5px);
+    background-size:10px 10px;opacity:.06;
+  }
+
+  /* 粉笔边缘 */
+  .chalk-border{
+    position:absolute;inset:clamp(8px,2vw,20px);pointer-events:none;display:none;
+    border:3px dashed rgba(255,255,255,.15);
+  }
+
+  /* 手绘框 */
+  .doodle-frame{
+    position:absolute;inset:clamp(12px,2.5vw,28px);pointer-events:none;display:none;
+    border:2px solid var(--accent-1);border-radius:4px;opacity:.18;
+    filter:url(#hand-drawn-filter);
+  }
+
+  /* ============================================================
+     ============ Type 布局 ============
+     ============================================================ */
+
+  /* hero: 大标题居中 */
+  .type-hero .content{justify-content:center;align-items:center;text-align:center}
+  .type-hero .title{font-size:clamp(40px,7vw,96px)}
+
+  /* conceptual: 标题偏左，右侧留白 */
+  .type-conceptual .content{justify-content:center;align-items:flex-start;padding-left:clamp(32px,8vw,80px)}
+  .type-conceptual .title{max-width:70%}
+
+  /* typography: 字体主导，字号跨度大 */
+  .type-typography .content{justify-content:center;align-items:flex-start;padding-left:clamp(24px,6vw,64px)}
+  .type-typography .title{font-size:clamp(48px,8vw,120px);line-height:.9}
+  .type-typography .subtitle{font-size:clamp(14px,1.8vw,22px)}
+
+  /* metaphor: 图形在前景，文字在底部 */
+  .type-metaphor .content{justify-content:flex-end;padding-bottom:clamp(32px,10vh,80px)}
+
+  /* scene: 层次感，文字居中偏下 */
+  .type-scene .content{justify-content:flex-end;align-items:center;text-align:center;padding-bottom:clamp(40px,12vh,100px)}
+
+  /* minimal: 大量留白，精简 */
+  .type-minimal .content{justify-content:center;align-items:flex-start;padding-left:clamp(40px,8vw,80px)}
+  .type-minimal .title{font-weight:300;font-size:clamp(28px,3.5vw,48px)}
+  .type-minimal .subtitle{font-weight:300}
+
+  /* ============================================================
+     ============ 内容区 ============
+     ============================================================ */
+  .content{
+    position:relative;z-index:2;flex:1;
+    display:flex;flex-direction:column;gap:clamp(8px,2vh,24px);
+    padding:clamp(32px,6vh,80px) clamp(24px,6vw,80px);
+  }
+  .title{
+    font-family:var(--font-headline);font-weight:var(--title-weight);
+    font-size:var(--title-size);line-height:1.1;
+    color:var(--text);opacity:var(--contrast-text);
+    letter-spacing:-.01em;
+  }
+  .subtitle{
+    font-family:var(--font-body);font-weight:400;
+    font-size:var(--subtitle-size);line-height:1.5;
+    color:var(--text-secondary);max-width:60%;
+  }
+  .author{
+    font-family:var(--font-body);font-weight:500;
+    font-size:var(--author-size);opacity:.55;
+    margin-top:clamp(8px,2vh,20px);
+  }
+  .tags{
+    display:flex;gap:8px;flex-wrap:wrap;margin-top:clamp(4px,1vh,12px);
+  }
+  .tag{
+    padding:4px 14px;border-radius:99px;font-size:var(--tag-size);
+    font-family:var(--font-mono);letter-spacing:.08em;
+    background:var(--tag-bg);color:var(--tag-text);font-weight:600;
+  }
+  .brand{
+    position:absolute;bottom:clamp(20px,4vh,40px);right:clamp(24px,6vw,60px);
+    font-family:var(--font-mono);font-size:var(--tag-size);
+    opacity:.3;letter-spacing:.15em;z-index:2;
+  }
+
+  /* ============================================================
+     ============ 响应式 ============
+     ============================================================ */
+  @media (max-width:640px){
+    .cover{width:100vw;max-height:none}
+    .subtitle{max-width:100%}
+    .type-conceptual .content,
+    .type-typography .content,
+    .type-minimal .content{padding-left:clamp(16px,4vw,32px)}
+  }
+
+  /* ============================================================
+     ============ SVG 滤镜（hand-drawn） ============
+     ============================================================ */
+</style>
+</head>
+<body>
+<svg style="display:none" aria-hidden="true">
+  <filter id="hand-drawn-filter">
+    <feTurbulence type="turbulence" baseFrequency=".03" numOctaves="3" result="t"/>
+    <feDisplacementMap in="SourceGraphic" in2="t" scale="2"/>
+  </filter>
+</svg>
+
+<div class="cover type-hero" id="cover">
+  <!-- 几何装饰 -->
+  <div class="geo">
+    <div class="geo-circle" style="position:absolute;width:clamp(100px,20vw,300px);height:clamp(100px,20vw,300px);top:-10%;right:-5%"></div>
+    <div class="geo-rect" style="position:absolute;width:clamp(60px,10vw,160px);height:clamp(60px,10vw,160px);bottom:15%;left:-3%;transform:rotate(15deg)"></div>
+    <div class="geo-dot" style="position:absolute;width:clamp(20px,3vw,50px);height:clamp(20px,3vw,50px);top:20%;right:15%"></div>
+  </div>
+  <div class="grain"></div>
+  <div class="halftone"></div>
+  <div class="chalk-border"></div>
+  <div class="doodle-frame"></div>
+
+  <!-- 文字内容 -->
+  <div class="content">
+    <h1 class="title">[必填] 标题</h1>
+    <p class="subtitle">[必填] 副标题或描述</p>
+    <p class="author">[必填] 作者</p>
+    <div class="tags">
+      <span class="tag">TAG</span>
+    </div>
+  </div>
+
+  <div class="brand">[必填] 品牌/网站名</div>
+</div>
+
+</body>
+</html>

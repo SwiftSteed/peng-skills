@@ -18,6 +18,7 @@ A collection of skills for content creation workflows.
 |-------|-------------|
 | [peng-slide-deck](./peng-slide-deck/SKILL.md) | HTML+CSS slide deck generator — 17 curated visual presets (customizable across texture, color, typography, density), 8-step reviewable pipeline |
 | [peng-image-cards](./peng-image-cards/SKILL.md) | HTML+CSS vertical card generator — 12 styles × 8 layouts × 3 palettes, output as scrollable web page. Ideal for social media, email, article embeds |
+| [peng-cover-image](./peng-cover-image/SKILL.md) | HTML+CSS article cover generator — 6 types × 11 palettes × 7 renderings × 4 text levels. Browser preview, screenshot as social share image |
 
 ## Quick Start
 
@@ -113,6 +114,36 @@ Generate vertical content cards as a single HTML file — scrollable, mobile-fri
 - **28 presets**: quick-start style+layout combos for every content type
 - **Vertical scroll**: mobile-first 3:4 card ratio, scroll-snap navigation
 - **Multi-scenario**: screenshot for social media, embed in articles, email-friendly HTML
+
+## peng-cover-image
+
+> [!NOTE]
+> Forked from [baoyu-cover-image](https://github.com/JimLiu/baoyu-skills#baoyu-cover-image) by [JimLiu](https://github.com/JimLiu). Replaces image generation with pure HTML+CSS output — same 5-dimension system (Type × Palette × Rendering × Text × Mood), browser-native rendering.
+
+Generate a single article cover as HTML — one page, one file, open in browser and screenshot for use anywhere.
+
+### Usage
+
+```bash
+/peng-cover-image path/to/article.md
+/peng-cover-image path/to/article.md --type hero --palette warm
+/peng-cover-image path/to/article.md --aspect 2.35:1 --text title-subtitle
+/peng-cover-image path/to/article.md --title "My Title" --author "Name"
+```
+
+### Live Demo
+
+→ **[Live Demo](https://swiftsteed.github.io/peng-skills/demo/covers/)** ←
+
+### Key Features
+
+- **5 dimensions**: Type (6) × Palette (11) × Rendering (7) × Text (4) × Mood (3)
+- **6 aspect ratios**: 16:9, 2.35:1, 4:3, 3:2, 1:1, 3:4 — cinema to square
+- **11 palettes**: warm, elegant, cool, dark, earth, vivid, pastel, mono, retro, duotone, macaron
+- **7 rendering styles**: flat-vector, hand-drawn, painterly, digital, pixel, chalk, screen-print
+- **4 font families**: clean, handwritten, serif, display
+- **Auto-selection**: content keywords → recommended type + palette
+- **Screenshot-ready**: open in browser, Cmd+Shift+4, use as og:image, article header, or email hero
 
 ## License
 
