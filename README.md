@@ -178,3 +178,7 @@ Generate high-density data visualization as a single HTML file — structure you
 ## License
 
 This project is licensed under the [MIT License](./LICENSE).
+
+---
+
+<sub>Built with [Claude Code](https://claude.ai/code) + DeepSeek v4 Pro</sub>

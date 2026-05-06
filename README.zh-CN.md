@@ -178,3 +178,7 @@ ln -sf $(pwd)/peng-skills/peng-slide-deck ~/.claude/skills/peng-slide-deck
 ## 许可证
 
 本项目基于 [MIT 许可证](./LICENSE) 开源。
+
+---
+
+<sub>基于 [Claude Code](https://claude.ai/code) + DeepSeek v4 Pro 构建</sub>
