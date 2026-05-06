@@ -17,6 +17,7 @@ A collection of skills for content creation workflows.
 | Skill | Description |
 |-------|-------------|
 | [peng-slide-deck](./peng-slide-deck/SKILL.md) | HTML+CSS slide deck generator — 17 curated visual presets (customizable across texture, color, typography, density), 8-step reviewable pipeline |
+| [peng-image-cards](./peng-image-cards/SKILL.md) | HTML+CSS vertical card generator — 12 styles × 8 layouts × 3 palettes, output as scrollable web page. Ideal for social media, email, article embeds |
 
 ## Quick Start
 
@@ -82,6 +83,36 @@ Try it in your browser — full WebGL backgrounds, page transitions, and animati
 - **Font safety**: Google Fonts (SIL OFL) → Apple system fonts → CSS generic fallbacks — zero copyright risk
 - **Self-contained output**: single HTML file with WebGL backgrounds, keyboard/wheel/touch navigation, ESC overview, and offline Motion One animations
 - **Print to PDF**: Cmd+P directly in browser
+
+## peng-image-cards
+
+> [!NOTE]
+> Forked from [baoyu-image-cards](https://github.com/JimLiu/baoyu-skills#baoyu-image-cards) by [JimLiu](https://github.com/JimLiu). Replaces image generation with pure HTML+CSS output — same 12 styles × 8 layouts × 3 palettes, browser-native rendering.
+
+Generate vertical content cards as a single HTML file — scrollable, mobile-friendly, ideal for social media, email marketing, and article embeds.
+
+### Usage
+
+```bash
+/peng-image-cards path/to/content.md
+/peng-image-cards path/to/content.md --preset knowledge-card
+/peng-image-cards path/to/content.md --style notion --layout dense
+/peng-image-cards path/to/content.md --cards 5
+/peng-image-cards path/to/content.md --outline-only
+```
+
+### Live Demo
+
+→ **[Live Demo](https://swiftsteed.github.io/peng-skills/demo/cards/)** ←
+
+### Key Features
+
+- **12 visual styles**: cute, fresh, warm, bold, minimal, retro, pop, notion, chalkboard, study-notes, screen-print, sketch-notes
+- **8 layouts**: sparse, balanced, dense, list, comparison, flow, mindmap, quadrant
+- **3 color palettes**: macaron, warm, neon — override style colors independently
+- **28 presets**: quick-start style+layout combos for every content type
+- **Vertical scroll**: mobile-first 3:4 card ratio, scroll-snap navigation
+- **Multi-scenario**: screenshot for social media, embed in articles, email-friendly HTML
 
 ## License
 

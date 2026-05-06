@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>peng-image-cards · Demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;500;600;700;900&family=Noto+Sans+SC:wght@300;400;500;700;900&family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@300;400;500;600;700&family=Caveat:wght@400;500;600;700&family=Klee+One:wght@400;600&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --card-width: min(100vw, 75vh * 3 / 4);
+    --card-ratio: 3 / 4;
+    --card-radius: 20px;
+    --card-padding: clamp(24px, 5vh, 48px);
+    --content-gap: clamp(12px, 2vh, 24px);
+    --bg: #F7F6F3;
+    --bg-rgb: 247,246,243;
+    --text: #37352F;
+    --text-secondary: #6B6963;
+    --accent: #2E5AAC;
+    --accent-rgb: 46,90,172;
+    --accent-2: #E03E2D;
+    --accent-3: #F4C542;
+    --border-color: rgba(100,100,90,.18);
+    --shadow: 0 2px 16px rgba(0,0,0,.06);
+    --font-headline: 'Noto Serif SC', 'PingFang SC', 'Songti SC', serif;
+    --font-body: 'Noto Sans SC', 'PingFang SC', sans-serif;
+    --font-mono: 'JetBrains Mono', 'SF Mono', monospace;
+    --font-display: 'Playfair Display', 'Georgia', serif;
+    --font-handwritten: 'Caveat', 'Klee One', 'Kaiti SC', cursive;
+    --headline-size: clamp(28px, 4.5vw, 48px);
+    --headline-weight: 700;
+    --body-size: clamp(15px, 2.2vw, 20px);
+    --small-size: clamp(11px, 1.5vw, 14px);
+    --line-height: 1.65;
+    --border-style: 1.5px solid var(--border-color);
+    --corner-radius: 12px;
+    --tag-bg: rgba(var(--accent-rgb), .1);
+    --tag-text: var(--accent);
+    --divider: 1px solid var(--border-color);
+    --decoration-display: block;
+    --grid-gap: clamp(12px, 2vh, 24px);
+  }
+
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth;scroll-snap-type:y mandatory;overflow-y:scroll;height:100%}
+  body{
+    background:#1a1a1c;color:var(--text);
+    font-family:var(--font-body);
+    -webkit-font-smoothing:antialiased;
+    display:flex;flex-direction:column;align-items:center;
+    padding:clamp(16px,3vh,40px) 0;
+    gap:clamp(16px,3vh,40px);
+  }
+  .card{
+    width:var(--card-width);aspect-ratio:var(--card-ratio);
+    background:var(--bg);border-radius:var(--card-radius);
+    padding:var(--card-padding);
+    display:flex;flex-direction:column;
+    position:relative;overflow:hidden;
+    scroll-snap-align:start;
+    box-shadow:var(--shadow);
+    border:var(--border-style);
+  }
+  .card-header{display:flex;flex-direction:column;gap:var(--content-gap)}
+  .card-body{flex:1;display:flex;flex-direction:column;justify-content:center;gap:var(--content-gap)}
+  .card-footer{margin-top:auto;padding-top:var(--content-gap)}
+  .kicker{
+    font-family:var(--font-mono);font-size:var(--small-size);
+    letter-spacing:.2em;text-transform:uppercase;opacity:.55;
+  }
+  .headline{
+    font-family:var(--font-headline);font-weight:var(--headline-weight);
+    font-size:var(--headline-size);line-height:1.2;
+  }
+  .body{
+    font-family:var(--font-body);font-size:var(--body-size);
+    line-height:var(--line-height);opacity:.85;
+  }
+  .small{
+    font-family:var(--font-body);font-size:var(--small-size);
+    opacity:.6;line-height:1.5;
+  }
+  .tag{
+    display:inline-block;padding:4px 12px;border-radius:99px;
+    background:var(--tag-bg);color:var(--tag-text);
+    font-family:var(--font-mono);font-size:var(--small-size);
+    letter-spacing:.1em;font-weight:600;
+  }
+  .hi{position:relative;display:inline;font-weight:700;color:var(--accent);}
+  .scribble{
+    font-family:var(--font-handwritten);font-weight:500;
+    font-size:1.4em;color:var(--accent);opacity:.8;
+    display:inline-block;transform:rotate(-2deg);
+  }
+  .big-num{
+    font-family:var(--font-display);font-weight:800;
+    font-size:clamp(64px,10vw,120px);line-height:.85;
+    letter-spacing:-.03em;opacity:.04;
+    position:absolute;right:var(--card-padding);bottom:var(--card-padding);
+  }
+  .rule{width:100%;height:1px;background:var(--border-color);margin:var(--content-gap) 0}
+
+  .card::after{
+    content:"";position:absolute;inset:0;pointer-events:none;
+    display:var(--decoration-display);border-radius:var(--card-radius);
+  }
+  .card.deco-doodle::after{
+    inset:16px;border:2px dashed var(--border-color);
+    border-radius:calc(var(--card-radius) - 4px);opacity:.5;
+  }
+
+  .layout-sparse .card-body{justify-content:center;align-items:center;text-align:center}
+  .layout-sparse .headline{font-size:clamp(36px,6vw,64px)}
+
+  .layout-balanced .card-body{
+    display:grid;grid-template-columns:1fr 1fr;
+    gap:var(--grid-gap);align-content:center;
+  }
+  .layout-balanced .item{
+    padding:clamp(12px,2vh,20px);border-radius:var(--corner-radius);
+    background:rgba(var(--accent-rgb),.05);border:var(--divider);
+  }
+  .layout-balanced .item .item-title{
+    font-family:var(--font-headline);font-weight:600;
+    font-size:clamp(14px,2vw,18px);margin-bottom:4px;
+  }
+  .layout-balanced .item .item-desc{
+    font-size:var(--small-size);opacity:.72;line-height:1.5;
+  }
+
+  .layout-dense .card-body{
+    display:grid;grid-template-columns:1fr 1fr;
+    gap:clamp(6px,1vh,14px);align-content:start;
+  }
+  .layout-dense .item{
+    padding:clamp(8px,1.4vh,14px);border-left:2px solid var(--accent);
+  }
+  .layout-dense .item .item-title{
+    font-family:var(--font-headline);font-weight:600;
+    font-size:var(--small-size);margin-bottom:2px;
+  }
+  .layout-dense .item .item-desc{
+    font-size:clamp(10px,1.3vw,13px);opacity:.7;line-height:1.4;
+  }
+
+  .layout-list .card-body{
+    display:flex;flex-direction:column;gap:var(--content-gap);
+  }
+  .layout-list .list-item{
+    display:flex;gap:clamp(10px,1.5vw,20px);align-items:flex-start;
+    padding-bottom:var(--content-gap);border-bottom:var(--divider);
+  }
+  .layout-list .list-item:last-child{border-bottom:none}
+  .layout-list .list-num{
+    font-family:var(--font-display);font-weight:800;
+    font-size:clamp(28px,4vw,48px);line-height:1;opacity:.25;
+    flex-shrink:0;min-width:clamp(36px,5vw,56px);
+  }
+  .layout-list .list-body .list-title{
+    font-family:var(--font-headline);font-weight:600;
+    font-size:clamp(15px,2vw,20px);margin-bottom:4px;
+  }
+  .layout-list .list-body .list-desc{
+    font-size:var(--small-size);opacity:.72;line-height:1.5;
+  }
+
+  .layout-flow .card-body{
+    display:flex;flex-direction:column;gap:0;
+    padding-left:clamp(20px,2.5vw,32px);
+    border-left:2px solid var(--accent);
+  }
+  .layout-flow .step{
+    position:relative;padding-bottom:var(--content-gap);
+  }
+  .layout-flow .step:last-child{padding-bottom:0}
+  .layout-flow .step::before{
+    content:"";position:absolute;
+    left:calc(-1 * clamp(20px,2.5vw,32px) - 6px);top:6px;
+    width:10px;height:10px;border-radius:50%;background:var(--accent);
+  }
+  .layout-flow .step .step-title{
+    font-family:var(--font-headline);font-weight:600;
+    font-size:clamp(14px,1.9vw,18px);
+  }
+  .layout-flow .step .step-desc{
+    font-size:var(--small-size);opacity:.72;line-height:1.5;margin-top:4px;
+  }
+
+  .layout-comparison .card-body{
+    display:grid;grid-template-columns:1fr 1fr;gap:var(--grid-gap);position:relative;
+  }
+  .layout-comparison .card-body::before{
+    content:"";position:absolute;left:50%;top:0;bottom:0;
+    width:1px;background:var(--border-color);
+  }
+  .layout-comparison .col{display:flex;flex-direction:column;gap:var(--content-gap)}
+  .layout-comparison .col-header{
+    font-family:var(--font-headline);font-weight:700;
+    font-size:clamp(16px,2.2vw,24px);text-align:center;
+    padding-bottom:var(--content-gap);border-bottom:2px solid var(--accent);
+  }
+  .layout-comparison .col-item{
+    font-size:var(--small-size);opacity:.78;line-height:1.5;
+    padding-left:1em;position:relative;
+  }
+  .layout-comparison .col-item::before{content:"·";position:absolute;left:0;color:var(--accent);}
+
+  .series-footer{
+    width:var(--card-width);text-align:center;
+    padding:clamp(16px,3vh,32px);
+    font-family:var(--font-mono);font-size:var(--small-size);
+    color:rgba(255,255,255,.3);letter-spacing:.15em;
+  }
+
+  @media (max-width:640px){
+    :root{--card-width:92vw;--card-ratio:auto;--card-padding:clamp(20px,4vw,32px)}
+    .card{min-height:70vh}
+    .layout-balanced .card-body,
+    .layout-dense .card-body,
+    .layout-comparison .card-body{grid-template-columns:1fr}
+    .layout-comparison .card-body::before{display:none}
+  }
+</style>
+</head>
+<body>
+
+<!-- 1. Cover / 封面 -->
+<article class="card deco-doodle layout-sparse">
+  <div class="card-header">
+    <span class="kicker">AI AGENT SKILL</span>
+  </div>
+  <div class="card-body">
+    <h1 class="headline">peng-<br>image-cards</h1>
+    <p class="body" style="margin-top:var(--content-gap)">
+      竖屏内容卡片生成器<br>
+      <span class="hi">12 风格</span> × <span class="hi">8 布局</span> × <span class="hi">3 配色</span>
+    </p>
+    <div style="margin-top:var(--content-gap)">
+      <span class="tag">HTML+CSS</span>
+      <span class="tag" style="margin-left:8px">无后端</span>
+    </div>
+  </div>
+  <div class="card-footer">
+    <span class="small">github.com/SwiftSteed/peng-skills</span>
+  </div>
+</article>
+
+<!-- 2. What is it -->
+<article class="card layout-balanced">
+  <div class="card-header">
+    <span class="kicker">WHAT</span>
+    <h2 class="headline">什么是<br>peng-image-cards?</h2>
+  </div>
+  <div class="card-body">
+    <div class="item">
+      <div class="item-title">继承</div>
+      <div class="item-desc">baoyu-image-cards 的 12 风格 × 8 布局 × 3 配色系统</div>
+    </div>
+    <div class="item">
+      <div class="item-title">输出</div>
+      <div class="item-desc">单文件 HTML，浏览器打开即可预览和截图</div>
+    </div>
+    <div class="item">
+      <div class="item-title">场景</div>
+      <div class="item-desc">公众号排版、邮件营销、个人主页、社交媒体</div>
+    </div>
+    <div class="item">
+      <div class="item-title">优势</div>
+      <div class="item-desc">无后端依赖、可嵌入网页、文本可选可复制</div>
+    </div>
+  </div>
+  <div class="card-footer">
+    <span class="small">基于 baoyu-image-cards（JimLiu/baoyu-skills）</span>
+  </div>
+</article>
+
+<!-- 3. Styles -->
+<article class="card layout-list">
+  <div class="card-header">
+    <span class="kicker">STYLES</span>
+    <h2 class="headline">12 种视觉风格</h2>
+    <p class="small">每个风格定义完整的配色、字体和装饰</p>
+  </div>
+  <div class="card-body">
+    <div class="list-item">
+      <div class="list-num">01</div>
+      <div class="list-body">
+        <div class="list-title">cute · 甜美少女</div>
+        <div class="list-desc">粉白基调、圆角柔光、少女感</div>
+      </div>
+    </div>
+    <div class="list-item">
+      <div class="list-num">02</div>
+      <div class="list-body">
+        <div class="list-title">notion · 知识卡片</div>
+        <div class="list-desc">手绘线条、灰度基调、知识分子风</div>
+      </div>
+    </div>
+    <div class="list-item">
+      <div class="list-num">03</div>
+      <div class="list-body">
+        <div class="list-title">chalkboard · 黑板教学</div>
+        <div class="list-desc">深色底、粉笔文字、课堂感</div>
+      </div>
+    </div>
+    <div class="list-item">
+      <div class="list-num">04</div>
+      <div class="list-body">
+        <div class="list-title">study-notes · 学习笔记</div>
+        <div class="list-desc">蓝笔+红批注+黄荧光笔、真实笔记风</div>
+      </div>
+    </div>
+    <div class="list-item">
+      <div class="list-num">05</div>
+      <div class="list-body">
+        <div class="list-title">+7 more</div>
+        <div class="list-desc">fresh / warm / bold / minimal / retro / pop / sketch-notes</div>
+      </div>
+    </div>
+  </div>
+  <div class="card-footer">
+    <span class="small">全部 12 风格 · CSS 变量一键切换</span>
+  </div>
+</article>
+
+<!-- 4. Layouts -->
+<article class="card layout-flow">
+  <div class="card-header">
+    <span class="kicker">LAYOUTS</span>
+    <h2 class="headline">8 种信息布局</h2>
+  </div>
+  <div class="card-body">
+    <div class="step">
+      <div class="step-title">sparse · 封面模式</div>
+      <div class="step-desc">居中大标题，适合封面和结尾页</div>
+    </div>
+    <div class="step">
+      <div class="step-title">balanced · 标准网格</div>
+      <div class="step-desc">2×2 排列，适合 3-4 个要点</div>
+    </div>
+    <div class="step">
+      <div class="step-title">list · 编号列表</div>
+      <div class="step-desc">排名、清单、步骤指引</div>
+    </div>
+    <div class="step">
+      <div class="step-title">flow · 时间线</div>
+      <div class="step-desc">竖排步骤，连接线串联</div>
+    </div>
+    <div class="step">
+      <div class="step-title">comparison · 左右对比</div>
+      <div class="step-desc">双栏并置，中轴分隔</div>
+    </div>
+  </div>
+  <div class="card-footer">
+    <span class="small">+ dense / mindmap / quadrant</span>
+  </div>
+</article>
+
+<!-- 5. Comparison -->
+<article class="card layout-comparison">
+  <div class="card-header">
+    <span class="kicker">VS</span>
+    <h2 class="headline">与 baoyu-image-cards 对比</h2>
+  </div>
+  <div class="card-body">
+    <div class="col">
+      <div class="col-header">baoyu-image-cards</div>
+      <div class="col-item">逐张 AI 生图</div>
+      <div class="col-item">输出 PNG 图片</div>
+      <div class="col-item">需要后端 API</div>
+      <div class="col-item">图片不可编辑文字</div>
+    </div>
+    <div class="col">
+      <div class="col-header">peng-image-cards</div>
+      <div class="col-item">直接生成 HTML</div>
+      <div class="col-item">单文件，浏览器预览</div>
+      <div class="col-item">零后端依赖</div>
+      <div class="col-item">文字可选可复制可搜索</div>
+    </div>
+  </div>
+  <div class="card-footer">
+    <span class="small">同样的风格系统 · 不同的呈现方式</span>
+  </div>
+</article>
+
+<div class="series-footer">
+  peng-image-cards · Demo · github.com/SwiftSteed/peng-skills
+</div>
+
+</body>
+</html>

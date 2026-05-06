@@ -17,6 +17,7 @@
 | Skill | 简介 |
 |------|------|
 | [peng-slide-deck](./peng-slide-deck/SKILL.md) | HTML+CSS 幻灯片生成器 — 17 套精调视觉风格（纹理×色彩×字体×密度可自由组合）、8 步流水线 |
+| [peng-image-cards](./peng-image-cards/SKILL.md) | HTML+CSS 竖屏卡片生成器 — 12 风格 × 8 布局 × 3 配色，输出为可滚动网页。适用于公众号排版、邮件、网页嵌入 |
 
 ## 快速开始
 
@@ -82,6 +83,36 @@ ln -sf $(pwd)/peng-skills/peng-slide-deck ~/.claude/skills/peng-slide-deck
 - **字体零版权风险**：Google Fonts (SIL OFL) → Apple 系统字体 → CSS 通用族名
 - **自包含输出**：单 HTML 文件，含 WebGL 背景、键盘/滚轮/触屏翻页、ESC 索引视图、离线 Motion One 动效
 - **直接打印 PDF**：浏览器内 Cmd+P
+
+## peng-image-cards
+
+> [!NOTE]
+> 基于 [JimLiu](https://github.com/JimLiu) 的 [baoyu-image-cards](https://github.com/JimLiu/baoyu-skills#baoyu-image-cards)。将生图换成纯 HTML+CSS 输出——保留 12 风格 × 8 布局 × 3 配色系统，用浏览器原生渲染。
+
+将内容转化为竖屏卡片单文件 HTML——上下滚动浏览，适配手机屏幕，适用于公众号排版、邮件营销、网页嵌入。
+
+### 用法
+
+```bash
+/peng-image-cards path/to/content.md
+/peng-image-cards path/to/content.md --preset knowledge-card
+/peng-image-cards path/to/content.md --style notion --layout dense
+/peng-image-cards path/to/content.md --cards 5
+/peng-image-cards path/to/content.md --outline-only
+```
+
+### 在线演示
+
+→ **[在线演示](https://swiftsteed.github.io/peng-skills/demo/cards/)** ←
+
+### 核心特性
+
+- **12 种视觉风格**：cute、fresh、warm、bold、minimal、retro、pop、notion、chalkboard、study-notes、screen-print、sketch-notes
+- **8 种信息布局**：sparse、balanced、dense、list、comparison、flow、mindmap、quadrant
+- **3 套配色覆盖**：macaron、warm、neon — 可独立替换风格的色彩
+- **28 个预设**：风格+布局快捷组合，覆盖各种内容类型
+- **竖屏滚动**：手机优先 3:4 卡片比例，scroll-snap 逐张滑动
+- **多场景分发**：截图发社交媒体、嵌入公众号文章、邮件友好 HTML
 
 ## 许可证
 

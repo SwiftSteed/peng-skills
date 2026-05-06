@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>[必填] 替换为卡片系列标题 · Image Cards</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;500;600;700;900&family=Noto+Sans+SC:wght@300;400;500;700;900&family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@300;400;500;600;700&family=Caveat:wght@400;500;600;700&family=Klee+One:wght@400;600&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900&display=swap" rel="stylesheet">
+<style>
+  /* ============================================================
+     ============ 风格变量（默认: cute + 无配色覆盖） ============
+     ============================================================ */
+  :root{
+    /* --- 基础尺寸 --- */
+    --card-width: min(100vw, 75vh * 3 / 4);
+    --card-ratio: 3 / 4;
+    --card-radius: 20px;
+    --card-padding: clamp(24px, 5vh, 48px);
+    --content-gap: clamp(12px, 2vh, 24px);
+
+    /* --- 配色（cute 默认）--- */
+    --bg: #FFF5F7;
+    --bg-rgb: 255,245,247;
+    --text: #4A3045;
+    --text-secondary: #8B6F82;
+    --accent: #F472B6;
+    --accent-rgb: 244,114,182;
+    --accent-2: #C084FC;
+    --accent-3: #67E8F9;
+    --border-color: rgba(180,140,160,.25);
+    --shadow: 0 4px 24px rgba(180,140,160,.12);
+
+    /* --- 字体（cute 默认）--- */
+    --font-headline: 'Noto Serif SC', 'PingFang SC', 'Songti SC', serif;
+    --font-body: 'Noto Sans SC', 'PingFang SC', sans-serif;
+    --font-mono: 'JetBrains Mono', 'SF Mono', monospace;
+    --font-display: 'Playfair Display', 'Georgia', serif;
+    --font-handwritten: 'Caveat', 'Klee One', 'Kaiti SC', cursive;
+
+    /* --- 排版 --- */
+    --headline-size: clamp(28px, 4.5vw, 48px);
+    --headline-weight: 700;
+    --body-size: clamp(15px, 2.2vw, 20px);
+    --small-size: clamp(11px, 1.5vw, 14px);
+    --line-height: 1.65;
+
+    /* --- 装饰 --- */
+    --border-style: 1.5px solid var(--border-color);
+    --corner-radius: 16px;
+    --tag-bg: rgba(var(--accent-rgb), .12);
+    --tag-text: var(--accent);
+    --divider: 1px solid var(--border-color);
+    --icon-opacity: .65;
+    --decoration-display: block;
+
+    /* --- 布局特定 --- */
+    --grid-gap: clamp(12px, 2vh, 24px);
+  }
+
+  /* ============================================================
+     ============ 全局 ============
+     ============================================================ */
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth;scroll-snap-type:y mandatory;overflow-y:scroll;height:100%}
+  body{
+    background:#1a1a1c;color:var(--text);
+    font-family:var(--font-body);
+    -webkit-font-smoothing:antialiased;
+    display:flex;flex-direction:column;align-items:center;
+    padding:clamp(16px,3vh,40px) 0;
+    gap:clamp(16px,3vh,40px);
+  }
+
+  /* ============================================================
+     ============ 卡片容器 ============
+     ============================================================ */
+  .card{
+    width:var(--card-width);aspect-ratio:var(--card-ratio);
+    background:var(--bg);border-radius:var(--card-radius);
+    padding:var(--card-padding);
+    display:flex;flex-direction:column;
+    position:relative;overflow:hidden;
+    scroll-snap-align:start;
+    box-shadow:var(--shadow);
+    border:var(--border-style);
+  }
+
+  /* ============================================================
+     ============ 卡片内元素 ============ */
+  .card-header{display:flex;flex-direction:column;gap:var(--content-gap)}
+  .card-body{flex:1;display:flex;flex-direction:column;justify-content:center;gap:var(--content-gap)}
+  .card-footer{margin-top:auto;padding-top:var(--content-gap)}
+
+  .kicker{
+    font-family:var(--font-mono);font-size:var(--small-size);
+    letter-spacing:.2em;text-transform:uppercase;opacity:.55;
+  }
+  .headline{
+    font-family:var(--font-headline);font-weight:var(--headline-weight);
+    font-size:var(--headline-size);line-height:1.2;
+  }
+  .body{
+    font-family:var(--font-body);font-size:var(--body-size);
+    line-height:var(--line-height);opacity:.85;
+  }
+  .small{
+    font-family:var(--font-body);font-size:var(--small-size);
+    opacity:.6;line-height:1.5;
+  }
+
+  /* --- 标签 --- */
+  .tag{
+    display:inline-block;padding:4px 12px;border-radius:99px;
+    background:var(--tag-bg);color:var(--tag-text);
+    font-family:var(--font-mono);font-size:var(--small-size);
+    letter-spacing:.1em;font-weight:600;
+  }
+
+  /* --- 高亮 --- */
+  .hi{
+    position:relative;display:inline;font-weight:700;color:var(--accent);
+  }
+
+  /* --- 手写标注 --- */
+  .scribble{
+    font-family:var(--font-handwritten);font-weight:500;
+    font-size:1.4em;color:var(--accent);opacity:.8;
+    display:inline-block;transform:rotate(-2deg);
+  }
+
+  /* --- 编号 --- */
+  .big-num{
+    font-family:var(--font-display);font-weight:800;
+    font-size:clamp(64px,10vw,120px);line-height:.85;
+    letter-spacing:-.03em;opacity:.06;
+    position:absolute;right:var(--card-padding);bottom:var(--card-padding);
+  }
+
+  /* --- 分割线 --- */
+  .rule{width:100%;height:1px;background:var(--border-color);margin:var(--content-gap) 0}
+
+  /* ============================================================
+     ============ 装饰（风格驱动） ============ */
+  .card::after{
+    content:"";position:absolute;inset:0;pointer-events:none;
+    display:var(--decoration-display);
+    border-radius:var(--card-radius);
+  }
+
+  /* --- cute / fresh 装饰：圆点背景 --- */
+  .card.deco-dots::after{
+    background-image:radial-gradient(circle,var(--accent) .8px,transparent .8px);
+    background-size:24px 24px;opacity:.08;
+  }
+
+  /* --- bold 装饰：粗边框内框 --- */
+  .card.deco-border::after{
+    inset:12px;border:2px solid var(--accent);
+    border-radius:calc(var(--card-radius) - 4px);
+    opacity:.25;
+  }
+
+  /* --- notion 装饰：手绘虚线框 --- */
+  .card.deco-doodle::after{
+    inset:16px;border:2px dashed var(--border-color);
+    border-radius:calc(var(--card-radius) - 4px);
+    opacity:.5;
+  }
+
+  /* --- screen-print 装饰：半调网点 --- */
+  .card.deco-halftone::after{
+    background-image:radial-gradient(circle,var(--text) .3px,transparent .3px);
+    background-size:8px 8px;opacity:.06;
+  }
+
+  /* --- retro 装饰：纹理叠加 --- */
+  .card.deco-grain::after{
+    background-image:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3'/></filter><rect width='200' height='200' filter='url(#n)' opacity='.04'/></svg>");
+  }
+
+  /* --- chalkboard 装饰：粉笔灰边缘 --- */
+  .card.deco-chalk::after{
+    inset:8px;border:3px dashed rgba(255,255,255,.15);
+    border-radius:calc(var(--card-radius) - 4px);
+  }
+
+  /* --- 手写圈注标记 --- */
+  .circle-mark{
+    position:absolute;width:clamp(40px,6vw,60px);height:clamp(40px,6vw,60px);
+    border:2px solid var(--accent);border-radius:50%;opacity:.35;
+    pointer-events:none;
+  }
+
+  /* ============================================================
+     ============ 布局 ============ */
+  /* --- sparse --- */
+  .layout-sparse .card-body{justify-content:center;align-items:center;text-align:center}
+  .layout-sparse .headline{font-size:clamp(36px,6vw,64px)}
+
+  /* --- balanced: 2×2 grid --- */
+  .layout-balanced .card-body{
+    display:grid;grid-template-columns:1fr 1fr;
+    gap:var(--grid-gap);align-content:center;
+  }
+  .layout-balanced .item{
+    padding:clamp(12px,2vh,20px);border-radius:var(--corner-radius);
+    background:rgba(var(--accent-rgb),.06);border:var(--divider);
+  }
+  .layout-balanced .item .item-title{
+    font-family:var(--font-headline);font-weight:600;
+    font-size:clamp(14px,2vw,18px);margin-bottom:4px;
+  }
+  .layout-balanced .item .item-desc{
+    font-size:var(--small-size);opacity:.72;line-height:1.5;
+  }
+
+  /* --- dense: compact grid --- */
+  .layout-dense .card-body{
+    display:grid;grid-template-columns:1fr 1fr;
+    gap:clamp(6px,1vh,14px);align-content:start;
+  }
+  .layout-dense .item{
+    padding:clamp(8px,1.4vh,14px);border-left:2px solid var(--accent);
+  }
+  .layout-dense .item .item-title{
+    font-family:var(--font-headline);font-weight:600;
+    font-size:var(--small-size);margin-bottom:2px;
+  }
+  .layout-dense .item .item-desc{
+    font-size:clamp(10px,1.3vw,13px);opacity:.7;line-height:1.4;
+  }
+
+  /* --- list: numbered items --- */
+  .layout-list .card-body{
+    display:flex;flex-direction:column;gap:var(--content-gap);
+  }
+  .layout-list .list-item{
+    display:flex;gap:clamp(10px,1.5vw,20px);align-items:flex-start;
+    padding-bottom:var(--content-gap);border-bottom:var(--divider);
+  }
+  .layout-list .list-item:last-child{border-bottom:none}
+  .layout-list .list-num{
+    font-family:var(--font-display);font-weight:800;
+    font-size:clamp(28px,4vw,48px);line-height:1;opacity:.3;
+    flex-shrink:0;min-width:clamp(36px,5vw,56px);
+  }
+  .layout-list .list-body .list-title{
+    font-family:var(--font-headline);font-weight:600;
+    font-size:clamp(15px,2vw,20px);margin-bottom:4px;
+  }
+  .layout-list .list-body .list-desc{
+    font-size:var(--small-size);opacity:.72;line-height:1.5;
+  }
+
+  /* --- comparison: two columns --- */
+  .layout-comparison .card-body{
+    display:grid;grid-template-columns:1fr 1fr;gap:var(--grid-gap);
+    position:relative;
+  }
+  .layout-comparison .card-body::before{
+    content:"";position:absolute;left:50%;top:0;bottom:0;
+    width:1px;background:var(--border-color);
+  }
+  .layout-comparison .col{display:flex;flex-direction:column;gap:var(--content-gap)}
+  .layout-comparison .col-header{
+    font-family:var(--font-headline);font-weight:700;
+    font-size:clamp(16px,2.2vw,24px);text-align:center;
+    padding-bottom:var(--content-gap);border-bottom:2px solid var(--accent);
+  }
+  .layout-comparison .col-item{
+    font-size:var(--small-size);opacity:.78;line-height:1.5;
+    padding-left:1em;position:relative;
+  }
+  .layout-comparison .col-item::before{
+    content:"·";position:absolute;left:0;color:var(--accent);
+  }
+
+  /* --- flow: vertical timeline --- */
+  .layout-flow .card-body{
+    display:flex;flex-direction:column;gap:0;
+    padding-left:clamp(20px,2.5vw,32px);
+    border-left:2px solid var(--accent);
+  }
+  .layout-flow .step{
+    position:relative;padding-bottom:var(--content-gap);
+  }
+  .layout-flow .step:last-child{padding-bottom:0}
+  .layout-flow .step::before{
+    content:"";position:absolute;
+    left:calc(-1 * clamp(20px,2.5vw,32px) - 6px);top:6px;
+    width:10px;height:10px;border-radius:50%;
+    background:var(--accent);
+  }
+  .layout-flow .step .step-title{
+    font-family:var(--font-headline);font-weight:600;
+    font-size:clamp(14px,1.9vw,18px);
+  }
+  .layout-flow .step .step-desc{
+    font-size:var(--small-size);opacity:.72;line-height:1.5;margin-top:4px;
+  }
+
+  /* --- mindmap: center node --- */
+  .layout-mindmap .card-body{
+    display:grid;grid-template-columns:1fr 1fr;gap:var(--grid-gap);
+    align-content:center;
+  }
+  .layout-mindmap .node{
+    padding:clamp(8px,1.4vh,16px);border-radius:99px;
+    text-align:center;font-family:var(--font-headline);
+    font-weight:600;font-size:var(--small-size);
+    border:var(--divider);background:rgba(var(--accent-rgb),.06);
+  }
+  .layout-mindmap .center-node{
+    grid-column:1/-1;justify-self:center;
+    background:var(--accent);color:#fff;
+    padding:clamp(12px,2vh,20px) clamp(20px,3vw,36px);
+    font-size:clamp(16px,2.2vw,24px);font-weight:700;
+  }
+
+  /* --- quadrant: 2×2 blocks --- */
+  .layout-quadrant .card-body{
+    display:grid;grid-template-columns:1fr 1fr;
+    grid-template-rows:1fr 1fr;gap:2px;
+    background:var(--border-color);border-radius:var(--corner-radius);
+    overflow:hidden;
+  }
+  .layout-quadrant .q-block{
+    background:var(--bg);display:flex;flex-direction:column;
+    align-items:center;justify-content:center;text-align:center;
+    padding:clamp(8px,1.4vh,20px);gap:4px;
+  }
+  .layout-quadrant .q-block .q-title{
+    font-family:var(--font-headline);font-weight:600;
+    font-size:clamp(14px,1.8vw,18px);
+  }
+  .layout-quadrant .q-block .q-desc{
+    font-size:clamp(10px,1.2vw,13px);opacity:.7;line-height:1.4;
+  }
+
+  /* ============================================================
+     ============ 配色覆盖 ============ */
+  /* macaron */
+  .palette-macaron{
+    --bg:#F5F0E8;--bg-rgb:245,240,232;
+    --text:#4A3B32;--text-secondary:#8B7B6F;
+    --accent:#E8655A;--accent-rgb:232,101,90;
+    --accent-2:#A8D8EA;--accent-3:#B5E5CF;
+    --border-color:rgba(160,140,120,.2);
+    --shadow:0 4px 24px rgba(160,140,120,.1);
+    --tag-bg:rgba(232,101,90,.1);--tag-text:#E8655A;
+  }
+  /* warm */
+  .palette-warm{
+    --bg:#FFECD2;--bg-rgb:255,236,210;
+    --text:#5C3D2E;--text-secondary:#8B6F5E;
+    --accent:#ED8936;--accent-rgb:237,137,54;
+    --accent-2:#F6AD55;--accent-3:#C05621;
+    --border-color:rgba(180,130,90,.2);
+    --shadow:0 4px 24px rgba(180,130,90,.1);
+    --tag-bg:rgba(237,137,54,.1);--tag-text:#C05621;
+  }
+  /* neon */
+  .palette-neon{
+    --bg:#1A1025;--bg-rgb:26,16,37;
+    --text:#E8E0F0;--text-secondary:#A898C0;
+    --accent:#00F5FF;--accent-rgb:0,245,255;
+    --accent-2:#FF00FF;--accent-3:#39FF14;
+    --border-color:rgba(160,140,200,.2);
+    --shadow:0 4px 24px rgba(0,245,255,.08);
+    --tag-bg:rgba(0,245,255,.15);--tag-text:#00F5FF;
+  }
+
+  /* ============================================================
+     ============ 页脚 ============
+     ============================================================ */
+  .series-footer{
+    width:var(--card-width);text-align:center;
+    padding:clamp(16px,3vh,32px);
+    font-family:var(--font-mono);font-size:var(--small-size);
+    color:rgba(255,255,255,.3);letter-spacing:.15em;
+  }
+
+  /* ============================================================
+     ============ 响应式 ============
+     ============================================================ */
+  @media (max-width:640px){
+    :root{--card-width:92vw;--card-ratio:auto;--card-padding:clamp(20px,4vw,32px)}
+    .card{min-height:70vh}
+    .layout-balanced .card-body,
+    .layout-dense .card-body,
+    .layout-comparison .card-body,
+    .layout-mindmap .card-body,
+    .layout-quadrant .card-body{grid-template-columns:1fr}
+    .layout-comparison .card-body::before{display:none}
+  }
+</style>
+</head>
+<body>
+
+<!-- CARDS_HERE -->
+
+<div class="series-footer">[必填] 页脚文字 · 系列结束</div>
+
+</body>
+</html>
