@@ -1,6 +1,6 @@
 ---
 name: peng-slide-deck
-description: 基于 HTML+CSS 的专业幻灯片生成器。保留 baoyu-slide-deck 的分阶段可审查管线 + 4 维正交风格系统（Texture×Mood×Typography×Density=525 种组合），用纯 HTML/CSS 替代生图。当用户需要"做幻灯片"、"生成 PPT"、"slide deck"、"演示文稿"时使用。
+description: 基于 HTML+CSS 的专业幻灯片生成器。保留 baoyu-slide-deck 的分阶段可审查管线 + 4 维正交风格系统（Texture×Mood×Typography×Density），用纯 HTML/CSS 替代生图。当用户需要"做幻灯片"、"生成 PPT"、"slide deck"、"演示文稿"时使用。
 version: 0.1.0
 ---
 
@@ -9,7 +9,7 @@ version: 0.1.0
 将内容转化为**单文件 HTML** 的专业幻灯片。核心设计：
 
 - **阅读和分享优先** — 自解释幻灯片、逻辑滚动流畅、适合社交媒体传播
-- **4 维正交风格系统** — Texture(5)×Mood(7)×Typography(5)×Density(3) = 525 种组合，17 个预设
+- **4 维正交风格系统** — Texture(5)×Mood(7)×Typography(5)×Density(3)，17 个精调预设
 - **纯 HTML+CSS 实现** — 无需生图，直接在浏览器中呈现
 - **分阶段可审查管线** — 每一步可回溯、可修改
 
