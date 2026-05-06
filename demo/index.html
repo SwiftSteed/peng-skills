@@ -4,23 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>peng-slide-deck · Demo</title>
-<!-- ============================================================
-     字体加载策略
-     - 优先从 Google Fonts 加载（海外用户）
-     - 国内 / 离线时回退到系统字体（CSS font-family 后备链）
-     - 最终回退：衬线→系统宋体/Georgia，非衬线→系统黑体/sans-serif
-     ============================================================ -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<!-- Google Fonts 由风格系统动态替换 -->
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,700&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,400&family=IBM+Plex+Mono:wght@300;400;500;600&family=Noto+Serif+SC:wght@300;400;500;600;700;900&family=Noto+Sans+SC:wght@300;400;500;700;900&family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@300;400;500;600;700&family=Caveat:wght@400;500;600;700&family=Klee+One:wght@400;600&display=swap" rel="stylesheet">
 <style>
   :root{
-    /* ============================================================
-       ============ 主题色（默认:🖋 墨水经典） ============
-       切换主题:从 references/themes/ 找对应预设，整体替换这几行
-       --ink / --ink-rgb / --paper / --paper-rgb / --paper-tint / --ink-tint
-       ============================================================ */
     --ink:#0a0a0b;
     --ink-rgb:10,10,11;
     --paper:#f1efea;
@@ -28,18 +16,11 @@
     --paper-tint:#e8e5de;
     --ink-tint:#18181a;
 
-    /* ============================================================
-       ============ 风格变量（默认:blueprint） ============
-       由 4 维风格系统驱动，切换预设时整体替换此块
-       ============================================================ */
-
-    /* --- Texture: grid --- */
     --bg-texture:none;
     --bg-overlay:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='40' height='40'><rect width='40' height='40' fill='none'/><rect width='1' height='40' fill='rgba(0,0,0,0.04)' x='20'/><rect width='40' height='1' fill='rgba(0,0,0,0.04)' y='20'/></svg>");
     --texture-opacity:0.5;
     --border-radius:2px;
 
-    /* --- Mood: cool --- */
     --palette-bg:#FAF8F5;
     --palette-bg-rgb:250,248,245;
     --palette-text:#334155;
@@ -53,7 +34,6 @@
     --palette-accent-3-rgb:191,219,254;
     --palette-warning:#F59E0B;
 
-    /* --- Typography: technical --- */
     --font-headline-en:'Inter', -apple-system, 'Helvetica Neue', sans-serif;
     --font-headline-zh:'Noto Serif SC', 'PingFang SC', 'Songti SC', serif;
     --font-body-en:'Inter', -apple-system, 'Helvetica Neue', sans-serif;
@@ -66,7 +46,6 @@
     --headline-letter-spacing:-0.02em;
     --body-letter-spacing:0.01em;
 
-    /* --- Density: balanced --- */
     --slide-padding:6vh 6vw 10vh 6vw;
     --content-gap:2.4vh;
     --headline-hero-size:10vw;
@@ -82,18 +61,15 @@
     --stat-label-size:max(10px, 0.78vw);
   }
 
-  /* ============ 全局重置 ============ */
   *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
   html,body{width:100%;height:100%;overflow:hidden;background:var(--ink);color:var(--paper);font-family:var(--font-body-zh);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
 
-  /* ============ WebGL 双背景 ============ */
   canvas.bg{position:fixed;inset:0;width:100vw;height:100vh;z-index:0;display:block;transition:opacity 1.2s ease}
   canvas#bg-light{opacity:0}
   canvas#bg-dark{opacity:1}
   body.light-bg canvas#bg-light{opacity:1}
   body.light-bg canvas#bg-dark{opacity:0}
 
-  /* ============ Deck 容器 + 翻页 ============ */
   #deck{position:fixed;inset:0;width:10000vw;height:100vh;display:flex;flex-wrap:nowrap;transition:transform .9s cubic-bezier(.77,0,.175,1);z-index:10;will-change:transform}
 
   .slide{
@@ -104,7 +80,6 @@
   .slide.light{color:var(--ink);background:var(--paper)}
   .slide.dark{color:var(--paper);background:var(--ink)}
 
-  /* ============ 背景遮罩 ============ */
   .slide::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;transition:background .7s ease}
   .slide.light::before{
     background:rgba(var(--paper-rgb),.78);
@@ -116,19 +91,16 @@
     backdrop-filter:blur(3px);
     -webkit-backdrop-filter:blur(3px);
   }
-  /* Hero 页：遮罩大幅降低，WebGL 背景明显透出 */
   .slide.hero.light::before{background:rgba(var(--paper-rgb),.16);backdrop-filter:none;-webkit-backdrop-filter:none}
   .slide.hero.dark::before{background:rgba(var(--ink-rgb),.12);backdrop-filter:none;-webkit-backdrop-filter:none}
   .slide.hero::after{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none}
   .slide.hero.light::after{background:linear-gradient(180deg,rgba(var(--paper-rgb),.28) 0%,rgba(var(--paper-rgb),0) 14%,rgba(var(--paper-rgb),0) 86%,rgba(var(--paper-rgb),.28) 100%)}
   .slide.hero.dark::after{background:linear-gradient(180deg,rgba(var(--ink-rgb),.32) 0%,rgba(var(--ink-rgb),0) 14%,rgba(var(--ink-rgb),0) 86%,rgba(var(--ink-rgb),.32) 100%)}
 
-  /* ============ 纹理叠加层 ============ */
   .slide::after.texture{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;opacity:var(--texture-opacity, 0.5)}
   .slide.light::after.texture{background-image:var(--bg-overlay)}
   .slide.dark::after.texture{background-image:var(--bg-overlay);filter:invert(1)}
 
-  /* ============ Chrome & Foot ============ */
   .chrome{
     display:flex;justify-content:space-between;align-items:flex-start;
     font-family:var(--font-mono);font-size:max(11px,0.78vw);
@@ -143,7 +115,6 @@
   }
   .foot .title{font-family:var(--font-headline-zh);font-weight:400;letter-spacing:.05em;text-transform:none;opacity:.75;font-size:13px}
 
-  /* ============ 字体层级 ============ */
   .kicker{
     font-family:var(--font-mono);font-size:max(11px,0.78vw);
     letter-spacing:.3em;text-transform:uppercase;opacity:.6;margin-bottom:2.6vh;
@@ -158,7 +129,6 @@
     line-height:1.04;letter-spacing:-.005em;position:relative;z-index:1;
   }
 
-  /* --- 标题层级 API --- */
   .h-hero{
     font-family:var(--font-headline-zh);
     font-weight:900;
@@ -208,7 +178,6 @@
     position:relative;z-index:1;
   }
 
-  /* --- 正文层级 --- */
   .lead{
     font-family:var(--font-headline-zh);
     font-weight:400;
@@ -250,7 +219,6 @@
     position:relative;z-index:1;
   }
 
-  /* --- 数字 --- */
   .big-num{
     font-family:var(--font-display);
     font-weight:800;font-size:10vw;line-height:.85;
@@ -270,14 +238,12 @@
     position:absolute;font-feature-settings:"tnum";
   }
 
-  /* --- 辅助 --- */
   em{font-style:italic;font-family:var(--font-display)}
   .en{font-family:var(--font-display);font-style:italic;font-weight:500}
   .hi{position:relative;display:inline;z-index:1}
   .slide.dark .hi::after{content:"";position:absolute;left:-.1em;right:-.1em;bottom:-.05em;height:.28em;background:rgba(var(--paper-rgb),.15);z-index:-1}
   .slide.light .hi::after{content:"";position:absolute;left:-.1em;right:-.1em;bottom:-.05em;height:.28em;background:rgba(var(--ink-rgb),.08);z-index:-1}
 
-  /* ============ 布局工具 ============ */
   .frame{flex:1;display:flex;flex-direction:column;min-height:0;overflow:hidden;position:relative;z-index:1}
   .frame.grid-2-7-5,
   .frame.grid-2-6-6,
@@ -295,7 +261,6 @@
   .split{display:grid;grid-template-columns:1fr 1fr;gap:4vw;flex:1;align-items:center}
   .split-55{display:grid;grid-template-columns:55fr 45fr;gap:5vw;flex:1;align-items:stretch}
 
-  /* ============ 网格系统 ============ */
   .grid-2-7-5{display:grid;grid-template-columns:7fr 5fr;gap:var(--grid-gap-v) var(--grid-gap-h);align-items:start}
   .grid-2-6-6{display:grid;grid-template-columns:1fr 1fr;gap:var(--grid-gap-v) var(--grid-gap-h);align-items:start}
   .grid-2-8-4{display:grid;grid-template-columns:8fr 4fr;gap:var(--grid-gap-v) var(--grid-gap-h);align-items:start}
@@ -309,7 +274,6 @@
   .grid-6{display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(2,1fr);gap:4vw 6vw;flex:1;align-content:center;padding:2vh 0}
   .grid-9{display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);gap:3vh 4vw;flex:1;align-content:center}
 
-  /* ============ Stat 数据卡片 ============ */
   .stat{display:flex;flex-direction:column;gap:1vh;align-items:flex-start;position:relative;z-index:1}
   .stat .n{
     font-family:var(--font-display);font-weight:800;font-size:8vw;
@@ -348,7 +312,6 @@
   .grid-4 .stat-card .stat-nb{font-size:5vw}
   .grid-3 .stat-card .stat-nb{font-size:6.8vw}
 
-  /* ============ Callout 引用框 ============ */
   .callout{
     padding:3vh 2.4vw;border-left:3px solid currentColor;
     position:relative;z-index:1;
@@ -364,7 +327,6 @@
   .callout .q-big{font-family:var(--font-headline-zh);font-weight:600;
     font-size:max(17px,1.6vw);line-height:1.42;}
 
-  /* ============ Pipeline 流水线 ============ */
   .pipeline-section{
     margin-top:4.4vh;padding-top:2.8vh;
     border-top:1px dashed rgba(127,127,127,.32);
@@ -380,6 +342,7 @@
   .pipeline[data-cols="3"]{grid-template-columns:repeat(3,1fr)}
   .pipeline[data-cols="4"]{grid-template-columns:repeat(4,1fr)}
   .pipeline[data-cols="6"]{grid-template-columns:repeat(6,1fr)}
+  .pipeline[data-cols="8"]{grid-template-columns:repeat(8,1fr)}
   .step{
     display:flex;flex-direction:column;gap:.8vh;
     padding-top:1.4vh;border-top:1px solid currentColor;
@@ -398,7 +361,6 @@
     font-size:max(12px,.95vw);line-height:1.45;opacity:.72;
   }
 
-  /* ============ Rowline 表格行 ============ */
   .rowline{
     display:grid;grid-template-columns:1fr 2fr 1fr;gap:2vw;
     padding:2.2vh 0;border-top:1px solid currentColor;
@@ -410,14 +372,12 @@
   .rowline .v{font-family:var(--font-body-zh);font-weight:400;font-size:max(14px,1.2vw);opacity:.85;line-height:1.55}
   .rowline .m{font-family:var(--font-mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;opacity:.6;justify-self:end}
 
-  /* ============ Pillar 支柱卡 ============ */
   .pillar{display:flex;flex-direction:column;gap:1.8vh;position:relative;z-index:1}
   .pillar .ic{font-family:var(--font-display);font-style:italic;font-size:2.6vw;opacity:.45;font-weight:400}
   .pillar .ic svg{width:2.8vw;height:2.8vw;stroke-width:1.2;opacity:.7}
   .pillar .t{font-family:var(--font-headline-zh);font-weight:700;font-size:2.4vw;line-height:1.1}
   .pillar .d{font-family:var(--font-body-zh);font-weight:400;font-size:max(14px,1.1vw);opacity:.76;line-height:1.6}
 
-  /* ============ Platform 平台卡 ============ */
   .plat{
     display:flex;flex-direction:column;justify-content:flex-end;
     padding:2vh 0;border-top:1px solid currentColor;
@@ -428,7 +388,6 @@
   .plat .sub{font-family:var(--font-mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;opacity:.55;margin-top:.6vh}
   .plat .fill{font-family:var(--font-body-zh);font-weight:300;font-size:2.4vw;opacity:.28;letter-spacing:-.01em;line-height:1}
 
-  /* ============ Tag & Rule ============ */
   .tag{
     display:inline-block;font-family:var(--font-mono);font-size:11px;
     letter-spacing:.24em;text-transform:uppercase;
@@ -438,7 +397,6 @@
   .rule{width:100%;height:1px;background:currentColor;opacity:.25;margin:3vh 0}
   .rule.v{width:1px;height:100%;margin:0}
 
-  /* ============ 图片系统 ============ */
   .img-slot{
     border:1.5px dashed rgba(127,127,127,.4);
     display:flex;align-items:center;justify-content:center;
@@ -498,7 +456,6 @@
   figure.tile > .frame-img{flex:0 0 auto}
   figure.frame-img{margin:0;display:flex;flex-direction:column;min-width:0}
 
-  /* ============ 导航 ============ */
   #nav{
     position:fixed;left:50%;bottom:2.6vh;transform:translateX(-50%);
     z-index:30;display:flex;gap:10px;padding:8px 14px;
@@ -522,16 +479,13 @@
     opacity:.4;mix-blend-mode:difference;color:#aaa;
   }
 
-  /* ============ Icons (Lucide) ============ */
   .ico{width:1em;height:1em;display:inline-block;vertical-align:-.12em;stroke:currentColor;fill:none;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
   .ico-lg{width:2.6vw;height:2.6vw;stroke-width:1.2;display:inline-block;fill:none;stroke:currentColor;stroke-linecap:round;stroke-linejoin:round}
   .ico-md{width:1.8vw;height:1.8vw;stroke-width:1.3;display:inline-block;vertical-align:-.4em;fill:none;stroke:currentColor;stroke-linecap:round;stroke-linejoin:round}
   .ico-sm{width:1.1vw;height:1.1vw;stroke-width:1.4;display:inline-block;vertical-align:-.15em;opacity:.7;fill:none;stroke:currentColor;stroke-linecap:round;stroke-linejoin:round}
 
-  /* ============ Signature / 手写 ============ */
   .sign{font-family:var(--font-handwritten);font-weight:500;font-size:2vw;opacity:.7}
 
-  /* ============ 动效系统 (Motion One) ============ */
   [data-anim]{opacity:1}
   body.motion-ready [data-anim]{opacity:0}
   body.motion-ready [data-anim="left"]{transform:translateX(-24px)}
@@ -539,7 +493,6 @@
   body.motion-ready [data-anim="line"]{opacity:0;transform:translateY(10px)}
   body.motion-ready [data-animate="pipeline"] [data-anim]{opacity:.15}
 
-  /* ============ 特殊布局适配 ============ */
   .layout-icon-grid{
     display:grid;grid-template-columns:repeat(3,1fr);
     gap:3vh 3vw;flex:1;align-content:center;
@@ -553,7 +506,21 @@
     font-size:max(14px,1.1vw);line-height:1.4;
   }
 
-  /* ============ 响应式降级 ============ */
+  /* Preset card styles */
+  .preset-card{
+    display:flex;flex-direction:column;gap:.6vh;
+    padding:1.2vh 1vw;border-left:2px solid var(--palette-accent-1);
+    position:relative;z-index:1;
+  }
+  .preset-card .preset-name{
+    font-family:var(--font-headline-zh);font-weight:700;
+    font-size:max(13px,1.1vw);line-height:1.2;
+  }
+  .preset-card .preset-desc{
+    font-family:var(--font-body-zh);font-weight:400;
+    font-size:max(11px,.85vw);opacity:.62;line-height:1.4;
+  }
+
   @media (max-width:900px){
     .display{font-size:16vw}
     .display-zh{font-size:12vw}
@@ -576,41 +543,32 @@
 
 <div id="deck">
 
-<!-- ============================================================
-     SLIDES 插入区 · 在此处填充所有 <section class="slide ..."> 页面
-     布局参考 references/layouts.md
-     组件参考 references/components.md
-     ============================================================ -->
-
-<!-- ====== Demo Slides (9 pages) ====== -->
-
 <!-- 1. Cover -->
 <section class="slide hero dark">
   <div class="chrome">
-    <div class="left">peng-skills &middot; Demo</div>
+    <div class="left">peng-slide-deck</div>
     <div class="right">01 / 09</div>
   </div>
-  <div class="frame center" style="min-height:80vh; display:grid; gap:4vh; align-content:center;">
-    <div class="kicker" data-anim>HTML+CSS Slide Deck Generator</div>
+  <div class="frame center">
+    <div class="kicker" data-anim>HTML+CSS SLIDE DECK GENERATOR</div>
     <h1 class="h-hero" data-anim>peng-slide-deck</h1>
-    <h2 class="h-sub" data-anim>HTML + CSS 幻灯片生成器</h2>
-    <p class="lead" style="max-width:58vw" data-anim>
-      基于 4 维正交风格系统，17 个精调预设，<br>单文件 HTML 输出，浏览器打开即用。
+    <p class="lead" style="margin-top:3vh;max-width:52vw" data-anim>
+      基于 4 维正交风格系统，将内容转化为<br>单文件 HTML 幻灯片的 AI 驱动工具
     </p>
     <div class="meta-row" data-anim>
       <span>github.com/SwiftSteed/peng-skills</span>
     </div>
   </div>
   <div class="foot">
-    <div class="title">peng-slide-deck &middot; 浏览器原生渲染</div>
-    <div>&mdash; 2026 &mdash;</div>
+    <div class="title">peng-slide-deck · 浏览器原生渲染</div>
+    <div>— 2026 —</div>
   </div>
 </section>
 
 <!-- 2. Overview -->
 <section class="slide dark" data-animate="directional">
   <div class="chrome">
-    <div class="left">概述 &middot; Overview</div>
+    <div class="left">概述 · Overview</div>
     <div class="right">02 / 09</div>
   </div>
   <div class="frame grid-2-6-6" style="margin-top:6vh">
@@ -619,7 +577,7 @@
       <h2 class="h-xl" data-anim="left">什么是<br>peng-slide-deck?</h2>
       <div class="callout" data-anim="left" style="margin-top:4vh">
         基于 <span class="hi">baoyu-slide-deck</span>（JimLiu/baoyu-skills）的 4 维风格系统与审查管线，<br>将 AI 生图替换为纯 HTML+CSS 输出。
-        <div class="callout-src">&mdash; Forked from JimLiu/baoyu-skills</div>
+        <div class="callout-src">— Forked from JimLiu/baoyu-skills</div>
       </div>
     </div>
     <div>
@@ -628,61 +586,61 @@
         <div class="stat-nb" style="font-size:3vw">单文件 HTML</div>
         <div class="stat-note">无后端，直接浏览器打开</div>
       </div>
-      <div class="stat-card" data-anim="right" style="margin-top:2vh">
-        <div class="stat-label">风格</div>
-        <div class="stat-nb" style="font-size:3vw">525 种组合</div>
-        <div class="stat-note">纹理 &times; 情绪 &times; 排版 &times; 密度</div>
+      <div class="stat-card" data-anim="right" style="margin-top:2.4vh">
+        <div class="stat-label">风格组合</div>
+        <div class="stat-nb">525<span class="stat-unit"> 种</span></div>
+        <div class="stat-note">Texture(5) × Mood(7) × Typography(5) × Density(3)</div>
       </div>
-      <div class="stat-card" data-anim="right" style="margin-top:2vh">
-        <div class="stat-label">预设</div>
-        <div class="stat-nb" style="font-size:3vw">17 个</div>
-        <div class="stat-note">blueprint · corporate · vintage...</div>
+      <div class="stat-card" data-anim="right" style="margin-top:2.4vh">
+        <div class="stat-label">预设主题</div>
+        <div class="stat-nb">17<span class="stat-unit"> 个</span></div>
+        <div class="stat-note">blueprint, corporate, sketch-notes 等</div>
       </div>
     </div>
   </div>
   <div class="foot">
-    <div class="title">单文件 &middot; 全栈 &middot; 零依赖</div>
+    <div class="title">基于 baoyu-slide-deck · 纯 HTML 呈现</div>
     <div>Overview</div>
   </div>
 </section>
 
-<!-- 3. 4-Dimension Style System -->
-<section class="slide light">
+<!-- 3. 4D Style System -->
+<section class="slide light" data-animate="directional">
   <div class="chrome">
-    <div class="left">风格系统 &middot; Style System</div>
+    <div class="left">风格系统 · Style System</div>
     <div class="right">03 / 09</div>
   </div>
-  <div class="frame" style="padding-top:5vh">
-    <div class="kicker" data-anim>DESIGN</div>
+  <div class="frame">
+    <div class="kicker" data-anim>CORE INNOVATION</div>
     <h2 class="h-xl" data-anim>4 维正交风格系统</h2>
-    <p class="lead" style="margin-bottom:5vh" data-anim>
-      纹理 (5) &times; 情绪 (7) &times; 排版 (5) &times; 密度 (3) = <span class="hi">525</span> 种 CSS 主题组合
+    <p class="lead" style="margin-top:2vh;max-width:48vw" data-anim>
+      每个维度独立选取，组合出 5 × 7 × 5 × 3 = 525 种独特视觉风格
     </p>
-    <div class="grid-4" style="margin-top:4vh">
-      <div class="stat-card" data-anim>
-        <div class="stat-label">Texture &middot; 纹理</div>
-        <div class="stat-nb">5</div>
+    <div class="grid-4" style="margin-top:5vh">
+      <div class="stat-card" data-anim="left">
+        <div class="stat-label">Texture · 纹理</div>
+        <div class="stat-nb" style="font-size:4.2vw">5<span class="stat-unit"> 种</span></div>
         <div class="stat-note">clean / grid / organic / pixel / paper</div>
       </div>
-      <div class="stat-card" data-anim>
-        <div class="stat-label">Mood &middot; 情绪</div>
-        <div class="stat-nb">7</div>
-        <div class="stat-note">professional / warm / cool / vibrant / dark / neutral / macaron</div>
+      <div class="stat-card" data-anim="right">
+        <div class="stat-label">Mood · 情绪</div>
+        <div class="stat-nb" style="font-size:4.2vw">7<span class="stat-unit"> 种</span></div>
+        <div class="stat-note">professional / warm / macaron / cool / vibrant / dark / neutral</div>
       </div>
-      <div class="stat-card" data-anim>
-        <div class="stat-label">Typography &middot; 排版</div>
-        <div class="stat-nb">5</div>
+      <div class="stat-card" data-anim="left">
+        <div class="stat-label">Typography · 排版</div>
+        <div class="stat-nb" style="font-size:4.2vw">5<span class="stat-unit"> 种</span></div>
         <div class="stat-note">geometric / humanist / handwritten / editorial / technical</div>
       </div>
-      <div class="stat-card" data-anim>
-        <div class="stat-label">Density &middot; 密度</div>
-        <div class="stat-nb">3</div>
+      <div class="stat-card" data-anim="right">
+        <div class="stat-label">Density · 密度</div>
+        <div class="stat-nb" style="font-size:4.2vw">3<span class="stat-unit"> 种</span></div>
         <div class="stat-note">minimal / balanced / dense</div>
       </div>
     </div>
   </div>
   <div class="foot">
-    <div class="title">每个维度映射到具体 CSS 变量</div>
+    <div class="title">Texture × Mood × Typography × Density</div>
     <div>Style System</div>
   </div>
 </section>
@@ -690,42 +648,68 @@
 <!-- 4. 17 Presets -->
 <section class="slide light">
   <div class="chrome">
-    <div class="left">预设 &middot; Presets</div>
+    <div class="left">预设 · Presets</div>
     <div class="right">04 / 09</div>
   </div>
-  <div class="frame" style="padding-top:5vh">
-    <div class="kicker" data-anim>PRESETS</div>
-    <h2 class="h-xl" data-anim>17 个精调预设</h2>
-    <p class="lead" style="margin-bottom:4vh" data-anim>根据内容关键词自动推荐，无匹配回退到 blueprint</p>
+  <div class="frame">
+    <div class="kicker" data-anim>17 CURATED PRESETS</div>
+    <h2 class="h-xl" data-anim>精选预设，一键切换</h2>
+    <p class="lead" style="margin-top:2vh" data-anim>
+      每个预设是完整的 :root CSS 变量块，覆盖全部 4 个维度
+    </p>
     <div class="grid-6" style="margin-top:4vh">
-      <div class="stat-card" data-anim>
-        <div class="stat-label">Blueprint</div>
-        <div class="stat-note">架构 &middot; 系统设计</div>
+      <div class="preset-card" data-anim>
+        <div class="preset-name">blueprint</div>
+        <div class="preset-desc">架构 / 系统设计</div>
       </div>
-      <div class="stat-card" data-anim>
-        <div class="stat-label">Corporate</div>
-        <div class="stat-note">投资者 &middot; 提案</div>
+      <div class="preset-card" data-anim>
+        <div class="preset-name">corporate</div>
+        <div class="preset-desc">投资者 / 商业提案</div>
       </div>
-      <div class="stat-card" data-anim>
-        <div class="stat-label">Minimal</div>
-        <div class="stat-note">高管简报</div>
+      <div class="preset-card" data-anim>
+        <div class="preset-name">minimal</div>
+        <div class="preset-desc">高管简报</div>
       </div>
-      <div class="stat-card" data-anim>
-        <div class="stat-label">Sketch Notes</div>
-        <div class="stat-note">教程 &middot; 学习</div>
+      <div class="preset-card" data-anim>
+        <div class="preset-name">sketch-notes</div>
+        <div class="preset-desc">教程 / 学习</div>
       </div>
-      <div class="stat-card" data-anim>
-        <div class="stat-label">Bold Editorial</div>
-        <div class="stat-note">产品发布</div>
+      <div class="preset-card" data-anim>
+        <div class="preset-name">bold-editorial</div>
+        <div class="preset-desc">产品发布 / 主题演讲</div>
       </div>
-      <div class="stat-card" data-anim>
-        <div class="stat-label">Vintage</div>
-        <div class="stat-note">历史 &middot; 人文</div>
+      <div class="preset-card" data-anim>
+        <div class="preset-name">dark-atmospheric</div>
+        <div class="preset-desc">娱乐 / 游戏</div>
+      </div>
+      <div class="preset-card" data-anim>
+        <div class="preset-name">notion</div>
+        <div class="preset-desc">产品演示 / SaaS</div>
+      </div>
+      <div class="preset-card" data-anim>
+        <div class="preset-name">vintage</div>
+        <div class="preset-desc">历史 / 文化遗产</div>
+      </div>
+      <div class="preset-card" data-anim>
+        <div class="preset-name">scientific</div>
+        <div class="preset-desc">生物 / 化学 / 医学</div>
+      </div>
+      <div class="preset-card" data-anim>
+        <div class="preset-name">pixel-art</div>
+        <div class="preset-desc">游戏 / 开发者演讲</div>
+      </div>
+      <div class="preset-card" data-anim>
+        <div class="preset-name">watercolor</div>
+        <div class="preset-desc">生活方式 / 健康</div>
+      </div>
+      <div class="preset-card" data-anim>
+        <div class="preset-name">fantasy-animation</div>
+        <div class="preset-desc">教育叙事</div>
       </div>
     </div>
   </div>
   <div class="foot">
-    <div class="title">+ 11 个预设：chalkboard, dark-atmospheric, watercolor...</div>
+    <div class="title">17 个精调预设 · 关键词自动推荐</div>
     <div>Presets</div>
   </div>
 </section>
@@ -733,73 +717,81 @@
 <!-- 5. 8-Step Pipeline -->
 <section class="slide dark" data-animate="pipeline">
   <div class="chrome">
-    <div class="left">工作流 &middot; Workflow</div>
+    <div class="left">管线 · Pipeline</div>
     <div class="right">05 / 09</div>
   </div>
   <div class="frame">
-    <div class="kicker">PIPELINE</div>
-    <h2 class="h-xl">8 步可审查管线</h2>
+    <div class="kicker" data-anim="step">WORKFLOW</div>
+    <h2 class="h-xl" data-anim="step">8 步可审查管线</h2>
+    <p class="lead" style="margin-top:2vh" data-anim="step">
+      每一步可回溯、可修改，确保最终输出质量
+    </p>
     <div class="pipeline-section">
-      <div class="pipeline-label">Phase 1 &middot; 分析阶段</div>
-      <div class="pipeline" data-cols="4">
+      <div class="pipeline-label">阶段一：分析 & 确认</div>
+      <div class="pipeline" data-cols="3">
         <div class="step" data-anim="step">
           <div class="step-nb">01</div>
-          <div class="step-title">分析</div>
-          <div class="step-desc">内容分类、语言检测、风格推荐</div>
+          <div class="step-title">分析内容</div>
+          <div class="step-desc">分类类型、检测语言、标注风格信号</div>
         </div>
         <div class="step" data-anim="step">
           <div class="step-nb">02</div>
-          <div class="step-title">确认</div>
-          <div class="step-desc">风格、受众、页数、审查选项</div>
+          <div class="step-title">确认设置</div>
+          <div class="step-desc">风格、主题色、受众、页数</div>
         </div>
         <div class="step" data-anim="step">
           <div class="step-nb">03</div>
-          <div class="step-title">大纲</div>
-          <div class="step-desc">生成 CSS_STYLE_INSTRUCTIONS</div>
-        </div>
-        <div class="step" data-anim="step">
-          <div class="step-nb">04</div>
-          <div class="step-title">审查</div>
-          <div class="step-desc">审查大纲，可选编辑或重生成</div>
+          <div class="step-title">生成大纲</div>
+          <div class="step-desc">含完整 CSS_STYLE_INSTRUCTIONS</div>
         </div>
       </div>
     </div>
     <div class="pipeline-section">
-      <div class="pipeline-label">Phase 2 &middot; 生成阶段</div>
-      <div class="pipeline" data-cols="4">
+      <div class="pipeline-label">阶段二：审查 & 调整</div>
+      <div class="pipeline" data-cols="2">
         <div class="step" data-anim="step">
-          <div class="step-nb">05</div>
-          <div class="step-title">生成</div>
-          <div class="step-desc">注入 :root 变量 + 布局模板</div>
+          <div class="step-nb">04</div>
+          <div class="step-title">审查大纲</div>
+          <div class="step-desc">确认结构、页数、风格解析</div>
         </div>
         <div class="step" data-anim="step">
+          <div class="step-nb">05</div>
+          <div class="step-title">编辑大纲</div>
+          <div class="step-desc">支持增删改、重排页面</div>
+        </div>
+      </div>
+    </div>
+    <div class="pipeline-section">
+      <div class="pipeline-label">阶段三：生成 & 交付</div>
+      <div class="pipeline" data-cols="3">
+        <div class="step" data-anim="step">
           <div class="step-nb">06</div>
-          <div class="step-title">审查</div>
-          <div class="step-desc">审查 HTML，可选编辑或重生成</div>
+          <div class="step-title">生成 HTML</div>
+          <div class="step-desc">模板填入，CSS 变量替换</div>
         </div>
         <div class="step" data-anim="step">
           <div class="step-nb">07</div>
-          <div class="step-title">预览</div>
-          <div class="step-desc">浏览器直接打开 index.html</div>
+          <div class="step-title">审查 HTML</div>
+          <div class="step-desc">最终质量把关</div>
         </div>
         <div class="step" data-anim="step">
           <div class="step-nb">08</div>
-          <div class="step-title">交付</div>
-          <div class="step-desc">输出摘要，Ctrl+P 打印 PDF</div>
+          <div class="step-title">预览交付</div>
+          <div class="step-desc">浏览器打开，Cmd+P 打印 PDF</div>
         </div>
       </div>
     </div>
   </div>
   <div class="foot">
-    <div class="title">按 &rarr; / 空格 / 滚轮逐步推进 Pipeline</div>
-    <div>Workflow</div>
+    <div class="title">分析 → 确认 → 大纲 → 审查 → 生成 → 审查 → 预览 → 交付</div>
+    <div>Pipeline</div>
   </div>
 </section>
 
 <!-- 6. VS Comparison -->
 <section class="slide light" data-animate="directional">
   <div class="chrome">
-    <div class="left">对比 &middot; Comparison</div>
+    <div class="left">对比 · Comparison</div>
     <div class="right">06 / 09</div>
   </div>
   <div class="frame" style="padding-top:5vh">
@@ -832,7 +824,7 @@
     </div>
   </div>
   <div class="foot">
-    <div class="title">保留核心设计 &middot; 换一种呈现</div>
+    <div class="title">保留核心设计 · 换一种呈现</div>
     <div>Comparison</div>
   </div>
 </section>
@@ -840,50 +832,50 @@
 <!-- 7. Quick Start -->
 <section class="slide dark">
   <div class="chrome">
-    <div class="left">开始 &middot; Get Started</div>
+    <div class="left">开始 · Get Started</div>
     <div class="right">07 / 09</div>
   </div>
   <div class="frame" style="padding-top:6vh">
     <div class="kicker" data-anim>QUICK START</div>
     <h2 class="h-xl" data-anim>三步开始</h2>
     <div class="grid-3" style="margin-top:6vh">
-      <div class="pillar" data-anim style="padding:3vh 2vw;border:1px solid rgba(255,255,255,.12);border-radius:4px">
+      <div class="pillar" data-anim>
         <div class="ic">01</div>
         <div class="t">克隆仓库</div>
-        <div class="d" style="font-family:var(--font-mono);font-size:max(11px,.85vw)">git clone<br>peng-skills</div>
+        <div class="d">git clone 到本地，创建 skills 目录的符号链接</div>
       </div>
-      <div class="pillar" data-anim style="padding:3vh 2vw;border:1px solid rgba(255,255,255,.12);border-radius:4px">
+      <div class="pillar" data-anim>
         <div class="ic">02</div>
-        <div class="t">注册技能</div>
-        <div class="d" style="font-family:var(--font-mono);font-size:max(11px,.85vw)">ln -sf peng-slide-deck<br>~/.claude/skills/</div>
+        <div class="t">准备内容</div>
+        <div class="d">Markdown 文件，或直接提供文字内容</div>
       </div>
-      <div class="pillar" data-anim style="padding:3vh 2vw;border:1px solid rgba(255,255,255,.12);border-radius:4px">
+      <div class="pillar" data-anim>
         <div class="ic">03</div>
-        <div class="t">开始创作</div>
-        <div class="d" style="font-family:var(--font-mono);font-size:max(11px,.85vw)">/peng-slide-deck<br>article.md</div>
+        <div class="t">一行命令</div>
+        <div class="d">/peng-slide-deck article.md --style blueprint</div>
       </div>
     </div>
-    <div class="callout" style="margin-top:4vh" data-anim>
-      "从内容到幻灯片，一条命令的距离。"
+    <div class="callout" style="margin-top:5vh" data-anim>
+      <div class="q-big">支持选项：--style, --audience, --lang, --slides, --theme, --outline-only, --html-only</div>
     </div>
   </div>
   <div class="foot">
-    <div class="title">github.com/SwiftSteed/peng-skills</div>
-    <div>Quick Start</div>
+    <div class="title">克隆 → 准备内容 → 一行命令生成</div>
+    <div>Get Started</div>
   </div>
 </section>
 
 <!-- 8. Credits -->
 <section class="slide hero dark">
   <div class="chrome">
-    <div class="left">致谢 &middot; Credits</div>
+    <div class="left">致谢 · Credits</div>
     <div class="right">08 / 09</div>
   </div>
   <div class="frame center" style="min-height:80vh; display:grid; gap:5vh; align-content:center;">
     <div class="kicker" data-anim>ACKNOWLEDGMENT</div>
     <h1 class="h-hero" style="font-size:7vw" data-anim>致谢</h1>
     <p class="lead" style="max-width:60vw" data-anim>
-      æ¬é¡¹ç®åºäº <span class="hi">baoyu-slide-deck</span> çæ ¸å¿è®¾è®¡——<br>
+      本项目基于 <span class="hi">baoyu-slide-deck</span> 的核心设计——<br>
       4 维正交风格系统、17 个精调预设、8 步审查管线<br>
       均来自 JimLiu 的 baoyu-skills 项目。
     </p>
@@ -893,7 +885,7 @@
     </div>
   </div>
   <div class="foot">
-    <div class="title">基于 baoyu-slide-deck &middot; JimLiu</div>
+    <div class="title">基于 baoyu-slide-deck · JimLiu</div>
     <div>Acknowledgments</div>
   </div>
 </section>
@@ -901,22 +893,22 @@
 <!-- 9. Back Cover -->
 <section class="slide hero light">
   <div class="chrome">
-    <div class="left">peng-slide-deck &middot; Demo</div>
+    <div class="left">peng-slide-deck · Demo</div>
     <div class="right">09 / 09</div>
   </div>
   <div class="frame center" style="min-height:80vh; display:grid; gap:6vh; align-content:center;">
     <div class="kicker" data-anim>THANK YOU</div>
     <h1 class="h-hero" style="font-size:8vw" data-anim>浏览器打开<br>即是最佳展示</h1>
     <p class="lead" style="max-width:52vw" data-anim>
-      Open in Browser &middot; Print to PDF &middot; No Backend, No Image Generation
+      Open in Browser · Print to PDF · No Backend, No Image Generation
     </p>
     <div class="meta-row" data-anim>
       <span>github.com/SwiftSteed/peng-skills</span>
     </div>
   </div>
   <div class="foot">
-    <div class="title">peng-slide-deck &middot; Demo</div>
-    <div>&mdash; Fin &mdash;</div>
+    <div class="title">peng-slide-deck · Demo</div>
+    <div>— Fin —</div>
   </div>
 </section>
 
@@ -925,10 +917,6 @@
 <div id="nav"></div>
 
 <script>
-/* =============== WebGL 双背景 ===============
-   深色页：Holographic Dispersion（全息色散 · 钛金暗流）—— 彩虹微扰、鼠标径向涟漪
-   浅色页：Spiral Vortex（旋转涡流 · 银色珍珠）—— domain-warp 流动、无中心
-*/
 const VS = `attribute vec2 position;void main(){gl_Position=vec4(position,0.0,1.0);}`;
 
 const FS_DARK = `precision highp float;
@@ -1040,7 +1028,6 @@ const t0=Date.now();
   requestAnimationFrame(loop);
 })();
 
-// =============== 导航（翻页 / 圆点 / 键盘 / 滚轮 / 触屏） ===============
 const deck=document.getElementById('deck');
 const slides=deck.querySelectorAll('.slide');
 const nav=document.getElementById('nav');
@@ -1067,7 +1054,6 @@ function go(n){
   lock=true;setTimeout(()=>lock=false,700);
 }
 
-/* =============== ESC 索引视图 =============== */
 let overviewOn=false;
 const ov=document.createElement('div');
 ov.id='overview';
@@ -1147,7 +1133,6 @@ go(0);
 <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
 <script>lucide.createIcons();</script>
 
-<!-- ============ Motion One 动效引擎 ============ -->
 <script type="module">
 let motion;
 try {
@@ -1242,7 +1227,6 @@ if(motion){
   window.__playSlide = playSlide;
   window.__pipeAdvance = pipeAdvance;
 
-  // 首屏补触发
   playSlide(0);
 }
 </script>
