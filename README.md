@@ -68,7 +68,7 @@ Transform content into a single-file HTML slide deck — no image generation bac
 
 Try it in your browser — full WebGL backgrounds, page transitions, and animations:
 
-→ **[Live Demo](https://swiftsteed.github.io/peng-skills/demo/)** ←
+→ **[Live Demo](https://swiftsteed.github.io/peng-skills/demo/index-en.html)** ←
 
 ![peng-slide-deck screenshot](./screenshots/peng-slide-deck-en.png)
 

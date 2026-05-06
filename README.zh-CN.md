@@ -68,7 +68,7 @@ ln -sf $(pwd)/peng-skills/peng-slide-deck ~/.claude/skills/peng-slide-deck
 
 在浏览器中体验完整效果——WebGL 背景、翻页动效、入场动画：
 
-→ **[在线演示](https://swiftsteed.github.io/peng-skills/demo/)** ←
+→ **[在线演示](https://swiftsteed.github.io/peng-skills/demo/index.html)** ←
 
 ![peng-slide-deck 截图](./screenshots/peng-slide-deck-zh.png)
 
