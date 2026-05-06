@@ -15,7 +15,7 @@ version: 0.1.0
 
 ## 与 baoyu-slide-deck 的关系
 
-本技能是 baoyu-slide-deck 的 HTML+CSS 移植版：
+本 skill 是 baoyu-slide-deck 的 HTML+CSS 移植版：
 
 | 维度 | baoyu-slide-deck | peng-slide-deck |
 |------|-----------------|-----------------|
@@ -264,7 +264,7 @@ HTML: index.html
 - 规格：单张 ≥ 1600px 宽，JPG 用于照片，PNG 用于透明图
 - HTML 中引用：`<img src="images/03-figma.jpg">`
 
-没有图片时直接用 CSS 色块、数据卡片、文字排版承载内容 — 这本身就是本技能的设计意图。
+没有图片时直接用 CSS 色块、数据卡片、文字排版承载内容 — 这本身就是本 skill 的设计意图。
 
 ## 参考文件
 

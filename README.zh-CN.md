@@ -4,7 +4,7 @@
 
 **AI Agent Skills for Content Creation**
 
-内容创作技能合集。
+内容创作 skill 合集。
 
 [English](./README.md) · [中文](./README.zh-CN.md)
 
@@ -12,9 +12,9 @@
 
 ---
 
-## 技能列表
+## Skill 列表
 
-| 技能 | 简介 |
+| Skill | 简介 |
 |------|------|
 | [peng-slide-deck](./peng-slide-deck/SKILL.md) | HTML+CSS 幻灯片生成器 — 4 维正交风格系统（纹理×情绪×排版×密度）、17 个精调预设、8 步流水线 |
 
