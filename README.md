@@ -16,7 +16,7 @@ A collection of skills for content creation workflows.
 
 | Skill | Description |
 |-------|-------------|
-| [peng-slide-deck](./peng-slide-deck/SKILL.md) | HTML+CSS slide deck generator — 4-dimension orthogonal style system (Texture × Mood × Typography × Density), 17 curated presets, 8-step reviewable pipeline |
+| [peng-slide-deck](./peng-slide-deck/SKILL.md) | HTML+CSS slide deck generator — 17 curated visual presets (customizable across texture, color, typography, density), 8-step reviewable pipeline |
 
 ## Quick Start
 
@@ -28,7 +28,7 @@ ln -sf $(pwd)/peng-skills/peng-slide-deck ~/.claude/skills/peng-slide-deck
 ## peng-slide-deck
 
 > [!NOTE]
-> Forked from [baoyu-slide-deck](https://github.com/JimLiu/baoyu-skills) by [JimLiu](https://github.com/JimLiu). Replaces image generation with pure HTML+CSS output — same 4-dimension style system and reviewable pipeline, browser-native rendering.
+> Forked from [baoyu-slide-deck](https://github.com/JimLiu/baoyu-skills) by [JimLiu](https://github.com/JimLiu). Replaces image generation with pure HTML+CSS output — same curated visual presets and reviewable pipeline, browser-native rendering.
 >
 > Color theme system and Motion One animation engine adapted from [guizang-ppt-skill](https://github.com/op7418/guizang-ppt-skill) by [op7418](https://github.com/op7418).
 
@@ -76,7 +76,7 @@ Try it in your browser — full WebGL backgrounds, page transitions, and animati
 
 ### Key Features
 
-- **4-dimension style system**: 4 orthogonal dimensions (Texture, Mood, Typography, Density) independently selectable, driving every aspect of the CSS theme
+- **17 curated visual presets**: blueprint, corporate, minimal, sketch-notes, bold-editorial, vintage, and more — auto-recommended from content keywords, freely customizable across texture, color, typography, and density
 - **17 curated presets**: blueprint, corporate, minimal, sketch-notes, bold-editorial, vintage, and more — auto-selected from content keywords
 - **8-step reviewable pipeline**: analyze → confirm → outline → review → generate HTML → review → preview → ship
 - **Font safety**: Google Fonts (SIL OFL) → Apple system fonts → CSS generic fallbacks — zero copyright risk

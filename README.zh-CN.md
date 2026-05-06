@@ -16,7 +16,7 @@
 
 | Skill | 简介 |
 |------|------|
-| [peng-slide-deck](./peng-slide-deck/SKILL.md) | HTML+CSS 幻灯片生成器 — 4 维正交风格系统（纹理×情绪×排版×密度）、17 个精调预设、8 步流水线 |
+| [peng-slide-deck](./peng-slide-deck/SKILL.md) | HTML+CSS 幻灯片生成器 — 17 套精调视觉风格（纹理×色彩×字体×密度可自由组合）、8 步流水线 |
 
 ## 快速开始
 
@@ -28,7 +28,7 @@ ln -sf $(pwd)/peng-skills/peng-slide-deck ~/.claude/skills/peng-slide-deck
 ## peng-slide-deck
 
 > [!NOTE]
-> 基于 [JimLiu](https://github.com/JimLiu) 的 [baoyu-slide-deck](https://github.com/JimLiu/baoyu-skills)。将生图换成纯 HTML+CSS 输出——保留 4 维风格系统和流水线，用浏览器原生渲染。
+> 基于 [JimLiu](https://github.com/JimLiu) 的 [baoyu-slide-deck](https://github.com/JimLiu/baoyu-skills)。将生图换成纯 HTML+CSS 输出——保留视觉风格系统和流水线，用浏览器原生渲染。
 >
 > 主题色系统和 Motion One 动效引擎源自 [op7418](https://github.com/op7418) 的 [guizang-ppt-skill](https://github.com/op7418/guizang-ppt-skill)。
 
@@ -76,7 +76,7 @@ ln -sf $(pwd)/peng-skills/peng-slide-deck ~/.claude/skills/peng-slide-deck
 
 ### 核心特性
 
-- **4 维正交风格系统**：纹理、情绪、排版、密度 4 维独立选取，驱动完整 CSS 主题
+- **17 套精调视觉风格**：blueprint、corporate、minimal、sketch-notes 等——根据内容关键词自动推荐，纹理、色彩、字体、密度可按需调节
 - **17 个精调预设**：blueprint、corporate、minimal、sketch-notes、bold-editorial、vintage 等——根据内容关键词自动推荐
 - **8 步流水线**：分析 → 确认 → 大纲 → 审查 → 生成 HTML → 审查 → 预览 → 交付
 - **字体零版权风险**：Google Fonts (SIL OFL) → Apple 系统字体 → CSS 通用族名

@@ -1,6 +1,6 @@
 ---
 name: peng-slide-deck
-description: 基于 HTML+CSS 的专业幻灯片生成器。保留 baoyu-slide-deck 的 8 步流水线（reviewable pipeline）+ 4 维正交风格系统（Texture×Mood×Typography×Density），用纯 HTML/CSS 替代生图。当用户需要"做幻灯片"、"生成 PPT"、"slide deck"、"演示文稿"时使用。
+description: 基于 HTML+CSS 的专业幻灯片生成器。保留 baoyu-slide-deck 的 8 步流水线（reviewable pipeline）+ 17 套精调视觉风格，用纯 HTML/CSS 替代生图。当用户需要"做幻灯片"、"生成 PPT"、"slide deck"、"演示文稿"时使用。
 version: 0.1.0
 ---
 
@@ -9,7 +9,7 @@ version: 0.1.0
 将内容转化为**单文件 HTML** 的专业幻灯片。核心设计：
 
 - **阅读和分享优先** — 自解释幻灯片、逻辑滚动流畅、适合社交媒体传播
-- **4 维正交风格系统** — Texture(5)×Mood(7)×Typography(5)×Density(3)，17 个精调预设
+- **17 套精调视觉风格** — 从内容关键词自动推荐，纹理、色彩、字体、密度可按需调节
 - **纯 HTML+CSS 实现** — 无需生图，直接在浏览器中呈现
 - **8 步流水线** — 每一步可回溯、可修改
 
@@ -20,7 +20,7 @@ version: 0.1.0
 | 维度 | baoyu-slide-deck | peng-slide-deck |
 |------|-----------------|-----------------|
 | 输出格式 | 逐页 PNG 图片 | 单文件 HTML |
-| 风格系统 | 4 维 × 17 预设 → 提示词描述 | 4 维 × 17 预设 → CSS 变量 |
+| 风格系统 | 17 个预设 → 提示词描述 | 17 个预设 → CSS 变量 |
 | 生成方式 | 调用图像生成后端 | 直接写入 HTML |
 | 工作流 | 9 步（含提示词审查） | 8 步（含 HTML 审查） |
 | 合并输出 | PPTX + PDF | HTML（可直接打印为 PDF） |
