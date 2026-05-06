@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>peng-infographic · Demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;500;600;700;900&family=Noto+Sans+SC:wght@300;400;500;700;900&family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@300;400;500;600;700&family=Caveat:wght@400;500;600;700&family=Klee+One:wght@400;600&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900&display=swap" rel="stylesheet">
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  html,body{width:100%;min-height:100%}
+  body{
+    background:#1a1a1c;display:flex;flex-direction:column;align-items:center;
+    padding:clamp(16px,3vh,32px);gap:clamp(20px,4vh,48px);
+    font-family:'Noto Sans SC','PingFang SC',sans-serif;-webkit-font-smoothing:antialiased;
+  }
+  .label{
+    font-family:'JetBrains Mono','SF Mono',monospace;font-size:11px;
+    letter-spacing:.2em;opacity:.4;color:#fff;text-align:center;margin-bottom:-12px;
+  }
+  .infographic{
+    width:min(100vw - 64px, 85vh * 16 / 9);
+    aspect-ratio:16/9;
+    border-radius:8px;overflow:hidden;position:relative;
+    box-shadow:0 4px 32px rgba(0,0,0,.4);
+    padding:clamp(28px,4vw,56px);
+  }
+  .title{
+    font-family:'Noto Serif SC','PingFang SC','Songti SC',serif;
+    font-weight:800;font-size:clamp(26px,3.5vw,44px);line-height:1.15;
+  }
+  .subtitle{
+    font-size:clamp(13px,1.6vw,18px);opacity:.65;
+  }
+  .section-title{
+    font-family:'Noto Serif SC','PingFang SC','Songti SC',serif;
+    font-weight:700;font-size:clamp(16px,2vw,26px);
+  }
+  .big-stat{
+    font-family:'Playfair Display','Georgia',serif;
+    font-weight:800;font-size:clamp(36px,5.5vw,72px);line-height:1;
+  }
+  .stat-label{
+    font-family:'JetBrains Mono','SF Mono',monospace;
+    font-size:clamp(10px,1.2vw,13px);opacity:.5;
+  }
+  .tag{
+    display:inline-block;padding:3px 12px;border-radius:99px;
+    font-size:clamp(10px,1.1vw,12px);
+    font-family:'JetBrains Mono','SF Mono',monospace;font-weight:600;
+  }
+  .note{
+    font-size:clamp(11px,1.2vw,14px);opacity:.65;line-height:1.55;
+  }
+  .footer{
+    font-family:'JetBrains Mono','SF Mono',monospace;
+    font-size:clamp(10px,1.1vw,12px);opacity:.25;letter-spacing:.1em;
+  }
+  .gap{margin-bottom:clamp(8px,1.5vh,16px)}
+  .g{display:grid;gap:clamp(10px,1.8vh,20px)}
+
+  /* === 1. craft-handmade + bento-grid === */
+  .info-1{background:#FDFBF7;color:#3D3228}
+  .info-1 .tag{background:rgba(232,101,90,.12);color:#C05048}
+  .info-1 .cell{background:rgba(232,101,90,.04);border:1px solid rgba(139,123,111,.15);border-radius:10px;padding:clamp(12px,2vh,20px)}
+  .info-1 .big-stat{color:#E8655A}
+  .info-1 .bento{display:grid;gap:clamp(10px,1.8vh,20px);grid-template-columns:repeat(6,1fr);height:calc(100% - 90px)}
+  .info-1 .bento .c2{grid-column:span 2}.info-1 .bento .c3{grid-column:span 3}.info-1 .bento .c4{grid-column:span 4}
+  .info-1 .bento .r2{grid-row:span 2}
+
+  /* === 2. technical-schematic + structural-breakdown === */
+  .info-2{background:#0D1B2A;color:#E0E8F0}
+  .info-2 .title{color:#60A5FA}
+  .info-2 .tag{background:rgba(37,99,235,.2);color:#60A5FA}
+  .info-2 .module{
+    border-left:2px solid #2563EB;padding:clamp(8px,1.2vh,14px);
+    background:rgba(37,99,235,.06);border-radius:0 6px 6px 0;
+  }
+  .info-2 .module .m-title{font-weight:700;font-size:clamp(12px,1.4vw,15px)}
+  .info-2 .module .m-desc{font-size:clamp(10px,1.1vw,12px);opacity:.65;margin-top:4px;line-height:1.4}
+  .info-2 .dense{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(8px,1.5vh,14px);height:calc(100% - 90px)}
+
+  /* === 3. corporate-memphis + dashboard === */
+  .info-3{background:#F8FAFC;color:#1E293B}
+  .info-3 .tag{background:rgba(239,68,68,.12);color:#DC2626}
+  .info-3 .metric{
+    text-align:center;padding:clamp(12px,2vh,20px);
+    border-radius:12px;background:#fff;border:1px solid #E2E8F0;
+  }
+  .info-3 .metric-num{
+    font-family:'Playfair Display','Georgia',serif;font-weight:800;
+    font-size:clamp(28px,4vw,48px);line-height:1;color:#EF4444;
+  }
+  .info-3 .metric-label{
+    font-family:'JetBrains Mono','SF Mono',monospace;
+    font-size:clamp(10px,1.1vw,12px);opacity:.45;margin-top:4px;
+  }
+  .info-3 .dashboard{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(10px,1.8vh,20px);height:calc(100% - 90px)}
+
+  @media (max-width:640px){
+    .infographic{width:calc(100vw - 32px);aspect-ratio:auto;min-height:80vh}
+    .info-1 .bento,.info-2 .dense,.info-3 .dashboard{grid-template-columns:1fr;height:auto}
+    .info-1 .bento .c2,.info-1 .bento .c3,.info-1 .bento .c4{grid-column:span 1}
+  }
+</style>
+</head>
+<body>
+
+<div class="label">peng-infographic · Demo</div>
+
+<!-- 1. craft-handmade + bento-grid -->
+<div class="infographic info-1">
+  <h1 class="title gap">How AI Agents Work</h1>
+  <p class="subtitle gap">A visual breakdown of the agent architecture and decision loop</p>
+  <div class="bento">
+    <div class="cell c2 r2">
+      <div class="big-stat">4</div>
+      <div class="stat-label">Core Components</div>
+      <div class="note" style="margin-top:8px">LLM · Tools · Memory · Orchestrator</div>
+    </div>
+    <div class="cell c2">
+      <div class="section-title">Perceive</div>
+      <div class="note">Receive user input and extract intent, context, and constraints</div>
+    </div>
+    <div class="cell c2">
+      <div class="section-title">Reason</div>
+      <div class="note">Plan steps, select tools, evaluate options before acting</div>
+    </div>
+    <div class="cell c2">
+      <span class="tag">OBSERVE</span>
+      <div class="note" style="margin-top:8px">Execute tool calls, capture results, feed back into context</div>
+    </div>
+    <div class="cell c2">
+      <span class="tag">RESPOND</span>
+      <div class="note" style="margin-top:8px">Synthesize findings, format output, deliver to user</div>
+    </div>
+  </div>
+  <div class="footer" style="position:absolute;bottom:clamp(28px,4vw,56px);left:clamp(28px,4vw,56px)">peng-skills</div>
+</div>
+
+<div class="label">craft-handmade · bento-grid</div>
+
+<!-- 2. technical-schematic + structural-breakdown -->
+<div class="infographic info-2">
+  <h1 class="title gap">HTML Slide Deck Pipeline</h1>
+  <p class="subtitle gap">8-step reviewable workflow — every stage traceable and editable</p>
+  <div class="dense">
+    <div class="module"><div class="m-title">01 Analyze</div><div class="m-desc">Classify content, detect language, identify style signals</div></div>
+    <div class="module"><div class="m-title">02 Confirm</div><div class="m-desc">Style, theme, audience, slide count — user confirms</div></div>
+    <div class="module"><div class="m-title">03 Outline</div><div class="m-desc">Generate slide outline with full CSS_STYLE_INSTRUCTIONS</div></div>
+    <div class="module"><div class="m-title">04 Review</div><div class="m-desc">Review outline structure, edit or reorder as needed</div></div>
+    <div class="module"><div class="m-title">05 Generate</div><div class="m-desc">Copy template, substitute CSS vars, insert slide HTML</div></div>
+    <div class="module"><div class="m-title">06 Review</div><div class="m-desc">Final HTML quality review before delivery</div></div>
+    <div class="module"><div class="m-title">07 Preview</div><div class="m-desc">Open in browser, test navigation and animations</div></div>
+    <div class="module"><div class="m-title">08 Ship</div><div class="m-desc">Single index.html — ready to share or print to PDF</div></div>
+    <div class="module" style="grid-column:1/-1;border-left:2px solid #60A5FA;background:rgba(96,165,250,.08)">
+      <div class="m-title">Output</div>
+      <div class="m-desc">Self-contained HTML · WebGL backgrounds · Keyboard/Wheel/Touch navigation · Motion One animations · Cmd+P to PDF</div>
+    </div>
+  </div>
+  <div class="footer" style="position:absolute;bottom:clamp(28px,4vw,56px);left:clamp(28px,4vw,56px);opacity:.4">peng-slide-deck</div>
+</div>
+
+<div class="label">technical-schematic · structural-breakdown</div>
+
+<!-- 3. corporate-memphis + dashboard -->
+<div class="infographic info-3">
+  <h1 class="title gap">peng-skills 2026</h1>
+  <p class="subtitle gap">Three AI agent skills for HTML-based content creation</p>
+  <div class="dashboard">
+    <div class="metric">
+      <div class="metric-num">3</div>
+      <div class="metric-label">SKILLS</div>
+      <div class="note" style="margin-top:8px">slide-deck · image-cards · cover-image</div>
+    </div>
+    <div class="metric">
+      <div class="metric-num">17</div>
+      <div class="metric-label">CURATED PRESETS</div>
+      <div class="note" style="margin-top:8px">Auto-matched from content keywords</div>
+    </div>
+    <div class="metric">
+      <div class="metric-num">8</div>
+      <div class="metric-label">REVIEW STEPS</div>
+      <div class="note" style="margin-top:8px">Every stage traceable and editable</div>
+    </div>
+    <div class="metric">
+      <div class="metric-num">12</div>
+      <div class="metric-label">CARD STYLES</div>
+      <div class="note" style="margin-top:8px">For social media and article embeds</div>
+    </div>
+    <div class="metric">
+      <div class="metric-num">11</div>
+      <div class="metric-label">COVER PALETTES</div>
+      <div class="note" style="margin-top:8px">From warm to duotone</div>
+    </div>
+    <div class="metric">
+      <div class="metric-num">1</div>
+      <div class="metric-label">HTML OUTPUT</div>
+      <div class="note" style="margin-top:8px">No backend · No API key · No image gen</div>
+    </div>
+  </div>
+  <div class="footer" style="position:absolute;bottom:clamp(28px,4vw,56px);left:clamp(28px,4vw,56px);opacity:.4">github.com/SwiftSteed/peng-skills</div>
+</div>
+
+<div class="label">corporate-memphis · dashboard</div>
+
+</body>
+</html>

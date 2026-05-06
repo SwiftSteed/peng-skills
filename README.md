@@ -19,6 +19,7 @@ A collection of skills for content creation workflows.
 | [peng-slide-deck](./peng-slide-deck/SKILL.md) | HTML+CSS slide deck generator — 17 curated visual presets (customizable across texture, color, typography, density), 8-step reviewable pipeline |
 | [peng-image-cards](./peng-image-cards/SKILL.md) | HTML+CSS vertical card generator — 12 styles × 8 layouts × 3 palettes, output as scrollable web page. Ideal for social media, email, article embeds |
 | [peng-cover-image](./peng-cover-image/SKILL.md) | HTML+CSS article cover generator — 6 types × 11 palettes × 7 renderings × 4 text levels. Browser preview, screenshot as social share image |
+| [peng-infographic](./peng-infographic/SKILL.md) | HTML+CSS infographic generator — 20+ layouts × 21 styles, high-density data visualization. Browser preview, screenshot or embed |
 
 ## Quick Start
 
@@ -144,6 +145,35 @@ Generate a single article cover as HTML — one page, one file, open in browser 
 - **4 font families**: clean, handwritten, serif, display
 - **Auto-selection**: content keywords → recommended type + palette
 - **Screenshot-ready**: open in browser, Cmd+Shift+4, use as og:image, article header, or email hero
+
+## peng-infographic
+
+> [!NOTE]
+> Forked from [baoyu-infographic](https://github.com/JimLiu/baoyu-skills#baoyu-infographic) by [JimLiu](https://github.com/JimLiu). Replaces image generation with pure HTML+CSS output — same 20+ layouts × 21 styles, browser-native rendering.
+
+Generate high-density data visualization as a single HTML file — structure your content visually, open in browser, screenshot or embed.
+
+### Usage
+
+```bash
+/peng-infographic path/to/content.md
+/peng-infographic path/to/content.md --layout bento-grid --style craft-handmade
+/peng-infographic path/to/content.md --layout dashboard --style corporate-memphis
+/peng-infographic path/to/content.md --aspect portrait
+```
+
+### Live Demo
+
+→ **[Live Demo](https://swiftsteed.github.io/peng-skills/demo/infographic/)** ←
+
+### Key Features
+
+- **20+ layouts**: bento-grid, linear-progression, binary-comparison, dashboard, venn-diagram, iceberg, funnel, hub-spoke, periodic-table, dense-modules, and more
+- **21 visual styles**: craft-handmade, technical-schematic, corporate-memphis, chalkboard, cyberpunk-neon, hand-drawn-edu, morandi-journal, and more
+- **Faithful data preservation**: source data is never summarized or rewritten
+- **Multiple aspect ratios**: landscape (16:9), portrait (9:16), square (1:1), or custom
+- **Rich CSS layouts**: grid, flexbox, and absolute positioning for every layout type
+- **Embed-ready**: copy HTML into articles, iframe, or screenshot for social media
 
 ## License
 

@@ -19,6 +19,7 @@
 | [peng-slide-deck](./peng-slide-deck/SKILL.md) | HTML+CSS 幻灯片生成器 — 17 套精调视觉风格（纹理×色彩×字体×密度可自由组合）、8 步流水线 |
 | [peng-image-cards](./peng-image-cards/SKILL.md) | HTML+CSS 竖屏卡片生成器 — 12 风格 × 8 布局 × 3 配色，输出为可滚动网页。适用于公众号排版、邮件、网页嵌入 |
 | [peng-cover-image](./peng-cover-image/SKILL.md) | HTML+CSS 文章封面生成器 — 6 种构图 × 11 套配色 × 7 种渲染 × 4 级文字。浏览器预览，截图即社交分享图 |
+| [peng-infographic](./peng-infographic/SKILL.md) | HTML+CSS 信息图生成器 — 20+ 布局 × 21 风格，高密度数据可视化。浏览器预览，截图或嵌入网页 |
 
 ## 快速开始
 
@@ -144,6 +145,35 @@ ln -sf $(pwd)/peng-skills/peng-slide-deck ~/.claude/skills/peng-slide-deck
 - **4 种字体族**：clean、handwritten、serif、display
 - **内容自动匹配**：关键词 → 推荐 Type + Palette
 - **截图即用**：浏览器打开，Cmd+Shift+4 截图，用作 og:image、文章头图、邮件封面
+
+## peng-infographic
+
+> [!NOTE]
+> 基于 [JimLiu](https://github.com/JimLiu) 的 [baoyu-infographic](https://github.com/JimLiu/baoyu-skills#baoyu-infographic)。将生图换成纯 HTML+CSS 输出——保留 20+ 布局 × 21 风格系统，用浏览器原生渲染。
+
+生成高密度数据可视化单文件 HTML——将结构化内容视觉化，浏览器打开，截图或嵌入网页。
+
+### 用法
+
+```bash
+/peng-infographic path/to/content.md
+/peng-infographic path/to/content.md --layout bento-grid --style craft-handmade
+/peng-infographic path/to/content.md --layout dashboard --style corporate-memphis
+/peng-infographic path/to/content.md --aspect portrait
+```
+
+### 在线演示
+
+→ **[在线演示](https://swiftsteed.github.io/peng-skills/demo/infographic/)** ←
+
+### 核心特性
+
+- **20+ 布局**：bento-grid、linear-progression、binary-comparison、dashboard、venn-diagram、iceberg、funnel、hub-spoke、periodic-table、dense-modules 等
+- **21 种视觉风格**：craft-handmade、technical-schematic、corporate-memphis、chalkboard、cyberpunk-neon、hand-drawn-edu、morandi-journal 等
+- **数据忠实保留**：源数据不概括、不改写、不改述
+- **多比例**：landscape (16:9)、portrait (9:16)、square (1:1) 或自定义
+- **丰富 CSS 布局**：grid、flexbox、absolute positioning 覆盖所有布局类型
+- **可嵌入**：复制 HTML 到文章、iframe，或截图发社交媒体
 
 ## 许可证
 
